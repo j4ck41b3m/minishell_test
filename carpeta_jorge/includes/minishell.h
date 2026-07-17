@@ -6,7 +6,7 @@
 /*   By: jcolina- <jcolina-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/29 12:50:10 by jcolina-          #+#    #+#             */
-/*   Updated: 2026/07/07 12:41:06 by jcolina-         ###   ########.fr       */
+/*   Updated: 2026/07/17 11:33:12 by jcolina-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,4 +109,31 @@ typedef struct s_shell
 	int		last_status;
 	int		running;
 }			t_shell;
+
+void	ft_minishell(t_shell *msh, char **envp);
+void	ft_lst_env_init(t_env **env, char **envp);
+void	ft_executor(t_shell *myshell, char **envp);
+void	child_proccess(t_shell *myshell, t_cmd *mycmd);
+void	ft_next_cmd(t_cmd *msh);
+char	*get_cmd_path(char *cmd, t_env *env);
+
+void	signal_init(void);
+void	sigint_handler(int sig);
+void	sigint_handler_aux(void);
+
+void	ft_builtin(t_cmd *mycmd);
+void	ft_echo(t_shell *msh);
+void	ft_cd(t_shell *msh);
+void	ft_pwd(t_shell *msh);
+void	ft_exit(t_shell *msh);
+void	ft_env(t_shell *msh);
+void	ft_export(t_shell *msh);
+void	ft_unset(t_shell *info);
+
+char	**env_to_array(t_shell *myshell);
+char	*get_env_name(char *fullenv);
+char	*get_env_value(char *fullenv);
+t_env	*ft_lstnew_env(char *name, char *value, int alloc);
+void	ft_lstadd_back_env(t_env **lst, t_env *new);
+
 #endif

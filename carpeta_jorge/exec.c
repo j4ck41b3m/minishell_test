@@ -6,7 +6,7 @@
 /*   By: jcolina- <jcolina-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/02 12:02:51 by jcolina-          #+#    #+#             */
-/*   Updated: 2026/07/07 13:32:15 by jcolina-         ###   ########.fr       */
+/*   Updated: 2026/07/16 19:53:55 by jcolina-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,22 +55,24 @@ void	ft_next_cmd(t_cmd *msh)
 	ft_memfree(tmp);
 }
 
-void	ft_builtin(t_cmd *mycmd)
+void	exec_cmd(t_shell *msh)
 {
-	if (!ft_strncmp(mycmd->arg[0], "echo", 4))
-		ft_echo(mycmd);
-	else if (!ft_strncmp(mycmd->arg[0], "cd", 2))
-		ft_cd(mycmd);
-	else if (!ft_strncmp(mycmd->arg[0], "pwd", 3))
-		ft_pwd(mycmd);
-	else if (!ft_strncmp(mycmd->arg[0], "export", 6))
-		ft_export(mycmd);
-	else if (!ft_strncmp(mycmd->arg[0], "unset", 5))
-		ft_unset(mycmd);
-	else if (!ft_strncmp(mycmd->arg[0], "env", 3))
-		ft_env(mycmd);
-	else if (!ft_strncmp(mycmd->arg[0], "exit", 4))
-		ft_exit(mycmd);
+	char	*cmd_path;
+	char	**envp;
+
+	envp = env_to_array(msh);
+	if (msh->cmd->redirs->type != 0)
+		dup2(msh->cmd->redirs->type, STDIN_FILENO);
+	if (msh->cmd->redirs->type != 1)
+		dup2(msh->cmd->redirs->type, STDOUT_FILENO);
+	cmd_path = get_cmd_path(msh->cmd->arg[0], msh->env);
+	if (!ft_isalnum(msh->cmd->arg[0][0]))
+	{
+		ft_memfree(cmd_path);
+		cmd_path = msh->cmd->arg[0];
+	}
+	execve(cmd_path, msh->cmd->arg, envp);
+	exit(127);
 }
 
 void	child_proccess(t_shell *myshell, t_cmd *mycmd)
@@ -78,7 +80,7 @@ void	child_proccess(t_shell *myshell, t_cmd *mycmd)
 	if (myshell->cmd->is_builtin)
 		ft_builtin(mycmd);
 	else
-		exec_cmd(myshell, mycmd);
+		exec_cmd(myshell);
 }
 
 void	ft_executor(t_shell *myshell, char **envp)
@@ -88,7 +90,12 @@ void	ft_executor(t_shell *myshell, char **envp)
 	ft_lst_env_init(&myshell->env, envp);
 	while (myshell->cmd->next)
 	{
-		//to insert function that checks if arguments are in ascii if Bernardo didnt/*
+		if (!ft_isascii(myshell->cmd->arg[0]))
+		{
+			myshell->last_status = 1;
+			break ;
+		}
+		myshell->cmd = ft_split_shell(myshell, myshell->cmd->arg, 32);
 		if (myshell->cmd->is_builtin)
 		{
 			ft_builtin(myshell->cmd);

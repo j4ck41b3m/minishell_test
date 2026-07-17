@@ -6,7 +6,7 @@
 /*   By: jcolina- <jcolina-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/01 11:23:22 by jcolina-          #+#    #+#             */
-/*   Updated: 2026/07/07 13:24:45 by jcolina-         ###   ########.fr       */
+/*   Updated: 2026/07/16 19:32:23 by jcolina-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,23 +16,23 @@ void	ft_lst_env_init(t_env **env, char **envp)
 {
 	t_env	*new;
 	int		i;
-	char	*var_name;
+	char	*key;
 	char	*var_value;
 
 	new = NULL;
 	i = -1;
 	while (++i < ft_arraylen(envp))
 	{
-		var_name = get_env_name(envp[i]);
+		key = get_env_name(envp[i]);
 		var_value = get_env_value(envp[i]);
-		new = ft_lstnew_env(var_name, var_value, 1);
+		new = ft_lstnew_env(key, var_value, 1);
 		ft_lstadd_back_env(env, new);
-		ft_memfree(var_name);
+		ft_memfree(key);
 		ft_memfree(var_value);
 	}
 }
 
-static void	ft_minishell(t_shell *msh, char **envp)
+void	ft_minishell(t_shell *msh, char **envp)
 {
 	char	*input;
 	char	*tmp;

@@ -6,23 +6,21 @@
 /*   By: jcolina- <jcolina-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/07/07 12:58:39 by jcolina-          #+#    #+#             */
-/*   Updated: 2026/07/07 12:58:43 by jcolina-         ###   ########.fr       */
+/*   Updated: 2026/07/16 19:26:08 by jcolina-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int			g_signal;
-
 static void	sigint_handler(int sig);
 static void	sigint_handler_aux(void);
 
 /**
- * @brief Inicializa la gestión de señales en el shell.
+ * @brief Initializes the shell's signal handling
  *
- * Esta función inicializa la gestión de señales en el shell, estableciendo los
- * manejadores de señales para SIGINT y SIGQUIT. Además, inicializa la variable
- * global `g_signal` en el estado base.
+ * This function Initializes the shell's signal handling, estalishing the
+ * signal handlers for SIGINT and SIGQUIT. It also initializes the
+ * g_signal variable
  */
 void	signal_init(void)
 {
@@ -32,14 +30,13 @@ void	signal_init(void)
 }
 
 /**
- * @brief Manejador de señales para SIGINT y SIGQUIT.
+ * @brief Signal handler for SIGINT y SIGQUIT.
  *
- * Esta función maneja las señales SIGINT y SIGQUIT. Dependiendo del estado
- * actual de la señal global `g_signal`, realiza acciones específicas, como
- * interrumpir la ejecución de un comando, cancelar un comando en ejecución
- * o finalizar un here document.
+ * This function handles de SIGINT and SIGQUIT signals. Depending on the actual
+ * state of g_signal, it does specific actions like interrupting a command
+ * exectuion, canceling an execution command, or finalizing a heredoc.
  *
- * @param sig El número de la señal recibida.
+ * @param sig is the recieved signal's number
  */
 static void	sigint_handler(int sig)
 {
@@ -68,11 +65,11 @@ static void	sigint_handler(int sig)
 }
 
 /**
- * @brief Función auxiliar para manejar situaciones adicionales de SIGINT.
+ * @brief Auxiliary function for the purpose of handling additional SIGINT cases.
  *
- * Esta función maneja situaciones adicionales de SIGINT que no están cubiertas
- * directamente en el manejador principal. Por ejemplo, cancela la ejecución de
- * un here document o establece la señal `S_SIGINT` en estado base o heredoc.
+ * This function manages additional SIGINT cases not directly covered by the main
+ * handler. For examplem canceling a heredoc execution or stablishing the
+ * S_SIGINT signal into base state or heredoc.
  */
 static void	sigint_handler_aux(void)
 {
