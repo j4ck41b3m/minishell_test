@@ -1,16 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   myminishell.h                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jcolina- <jcolina-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/05/29 12:50:10 by jcolina-          #+#    #+#             */
-/*   Updated: 2026/07/17 11:33:12 by jcolina-         ###   ########.fr       */
+/*   Updated: 2026/07/20 12:12:05 by jcolina-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
+#ifndef MYMINISHELL_H
+# define MYMINISHELL_H
 # include <stdio.h>
 # include <dirent.h>
 # include <errno.h>
@@ -29,12 +30,10 @@
 # include <termios.h>
 # include <unistd.h>
 # include "libft.h"
-# define MINISHELL_H
-
-extern int	g_signal;
-
 # define READLINE_MSG "\033[1;36mminishell\033[34m$> \033[0m"
 # define HEREDOC_MSG "\033[1;34m> \033[0m" // @return >
+
+extern int	g_signal;
 
 typedef enum e_signal
 {
@@ -116,6 +115,7 @@ void	ft_executor(t_shell *myshell, char **envp);
 void	child_proccess(t_shell *myshell, t_cmd *mycmd);
 void	ft_next_cmd(t_cmd *msh);
 char	*get_cmd_path(char *cmd, t_env *env);
+char	**ft_split_shell(t_shell *msh, char *str, char s);
 
 void	signal_init(void);
 void	sigint_handler(int sig);
