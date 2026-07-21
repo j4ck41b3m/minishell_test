@@ -1,6 +1,11 @@
 #include "minishell.h"
 #include "libft.h"
 
+/**
+ * @brief Echo the STRING(s) to standard output
+ * 
+ * @param msh The global status of minishell
+ */
 void	builtin_echo(t_shell *msh)
 {
 	int	i;

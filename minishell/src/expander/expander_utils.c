@@ -39,14 +39,11 @@ static char	*expand_variable(char *value, int *i, t_env *env, int last_status)
 	char	*name;
 	int		start;
 
-	result = NULL;
-	name = NULL;
 	(*i)++;
 	if (value[*i] == '?')
-	{
 		result = ft_itoa(last_status);
-		(*i)++;
-	}
+	else if (value[*i] == '0')
+		result = ft_strdup("minishell");
 	else if (value[*i] == '_' || ft_isalpha(value[*i]))
 	{
 		start = *i;
@@ -55,9 +52,11 @@ static char	*expand_variable(char *value, int *i, t_env *env, int last_status)
 		name = ft_substr(value, start, *i - start);
 		result = env_get(env, name);
 		free(name);
+		(*i)--;
 	}
 	else
-		result = ft_strdup("$");
+		result = ft_strdup("");
+	(*i)++;
 	return (result);
 }
 

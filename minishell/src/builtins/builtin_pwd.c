@@ -1,6 +1,11 @@
 #include "minishell.h"
 #include "libft.h"
 
+/**
+ * @brief Prints the full filename of the current working directory
+ * 
+ * @param msh The global status of minishell
+ */
 void	builtin_pwd(t_shell *msh)
 {
 	char	*pwd;
