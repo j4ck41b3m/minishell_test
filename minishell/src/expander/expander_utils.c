@@ -52,7 +52,7 @@ static char	*expand_variable(char *value, int *i, t_env *env, int last_status)
 		name = ft_substr(value, start, *i - start);
 		result = env_get(env, name);
 		free(name);
-		(*i)--;
+		return (result);
 	}
 	else
 		result = ft_strdup("");

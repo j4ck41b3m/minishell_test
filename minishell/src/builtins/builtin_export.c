@@ -1,20 +1,49 @@
 #include "minishell.h"
+#include "libft.h"
 #include "builtins_utils.h"
-/*
-static void		ft_export_without_arg(t_shell *msh);
-static t_env	*sort_list(t_env *lst);
-static t_env	*copy_list(t_env *lst);
-static int		check_export(char *arg);
-*/
+
+static char	*get_key(char *str, int *i)
+{
+	char	*key;
+
+	key = str;
+	(*i)++;
+	return (key);
+}
+
+static char	*get_value(char *str, int *i)
+{
+	char	*value;
+
+	(void)str;
+	value = ft_itoa(*i);
+	(*i)++;
+	return (value);
+}
 
 void	builtin_export(t_shell *shell)
 {
-	//	int	i;
+	char	*key;
+	char	*value;
+	int		i;
+	int		j;
+
 	shell->last_status = 0;
 	if (shell->cmd->argc == 1)
 		export_no_args(shell);
 	else
-		print_cmd(shell->cmd);
+	{
+		i = 1;
+		j = 0;
+		while (i < shell->cmd->argc)
+		{
+			key = get_key(shell->cmd->arg[i], &j);
+			if (key)
+				value = get_value(shell->cmd->arg[i], &j);
+			env_set(&shell->env, key, value);
+			i++;
+		}
+	}
 }
 
 /*

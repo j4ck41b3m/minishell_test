@@ -12,6 +12,8 @@ char	*env_get(t_env *env, const char *key)
 {
 	t_env	*aux;
 
+	if (!key)
+		return (NULL);
 	aux = env;
 	while (aux)
 	{
@@ -34,6 +36,8 @@ void	env_set(t_env **env, const char *key, const char *value)
 {
 	t_env	*aux;
 
+	if (!key)
+		return ;
 	aux = *env;
 	while (aux)
 	{
@@ -60,6 +64,8 @@ void	env_unset(t_env **env, const char *key)
 	t_env	*curr;
 	t_env	*prev;
 
+	if (!key)
+		return ;
 	curr = *env;
 	prev = NULL;
 	while (curr)
