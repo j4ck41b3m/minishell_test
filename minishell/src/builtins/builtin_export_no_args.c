@@ -53,7 +53,7 @@ static void	env_sort(t_env *env)
 
 static void	print_export_entry(const char *key, const char *value)
 {
-	if (value)
+	if (value && ft_strlen(value) > 0)
 		printf("declare -x %s=\"%s\"\n", key, value);
 	else
 		printf("declare -x %s\n", key);

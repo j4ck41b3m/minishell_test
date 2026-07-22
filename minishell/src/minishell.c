@@ -23,6 +23,7 @@ int	main(int ac, char **av, char **envp)
 			free(str);
 			str = readline(prompt);
 		}
+		rl_clear_history();
 		free(prompt);
 		end_shell(&shell);
 		free(str);
