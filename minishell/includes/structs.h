@@ -10,5 +10,6 @@ typedef struct s_shell		t_shell;
 typedef enum e_token_type	t_token_type;
 typedef enum e_pstate		t_pstate;
 typedef enum e_status		t_status;
+typedef enum e_signal		t_signal;
 
 #endif

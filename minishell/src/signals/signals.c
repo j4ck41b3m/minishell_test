@@ -1,4 +1,7 @@
 #include "minishell.h"
+#include "libft.h"
+
+int	g_signal;
 
 /**
  * @brief Initializes the shell's signal handling
