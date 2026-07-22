@@ -17,8 +17,10 @@ int	main(int ac, char **av, char **envp)
 			if (parse(str, &shell))
 			{
 				add_history(str);
-				executor(&shell);
+				if (g_signal != S_SIGINT_CMD)
+					executor(&shell);
 				free_cmd(&shell.cmd);
+				g_signal = S_BASE;
 			}
 			free(str);
 			str = readline(prompt);

@@ -15,8 +15,7 @@ void	next_cmd(t_shell *msh)
 {
 	t_cmd	*mycmd;
 
-	free_mem(msh->cmd->arg);
-	free_mem_all(msh->cmd);
+	free_cmd(&msh->cmd);
 	if (msh->cmd->redirs->type != 0)
 		close(msh->cmd->redirs->type);
 	if (msh->cmd->redirs->type != 1)

@@ -1,4 +1,5 @@
 #include "minishell.h"
+#include "libft.h"
 
 void	classify_cmd(t_cmd **cmd)
 {
@@ -37,14 +38,13 @@ void	execute_pipeline(t_shell *shell)
 
 	while (shell->cmd)
 	{
-		if (!ft_isascii(shell->cmd->arg[0]))
+		if (!ft_isascii(shell->cmd->arg[0][0]))
 		{
 			shell->last_status = 1;
 			break ;
 		}
-		shell->cmd = ft_split_shell(shell, shell->cmd->arg, 32);
 		if (shell->cmd->is_builtin)
-			ft_builtin(shell->cmd);
+			ft_builtin(shell);
 		else
 		{
 			g_signal = S_CMD;
@@ -52,7 +52,7 @@ void	execute_pipeline(t_shell *shell)
 			if (pid == 0)
 				execute_single(shell);
 			else
-				waitpid(-1, shell->cmd->redirs->type, 0);
+				waitpid(-1, &shell->last_status, 0);
 			handle_status(shell);
 		}
 		next_cmd(shell);
