@@ -26,7 +26,7 @@ void	execute_single(t_shell *shell)
 {
 	classify_cmd(&shell->cmd);
 	if (shell->cmd->is_builtin)
-		ft_builtin(shell);
+		exec_builtin(shell);
 	else
 		exec_cmd(shell);
 	return ;
@@ -44,7 +44,7 @@ void	execute_pipeline(t_shell *shell)
 			break ;
 		}
 		if (shell->cmd->is_builtin)
-			ft_builtin(shell);
+			exec_builtin(shell);
 		else
 		{
 			g_signal = S_CMD;

@@ -22,7 +22,7 @@ t_status	is_builtin(t_cmd *cmd)
  *
  * @param shell The global status of minishell
  */
-void	ft_builtin(t_shell *shell)
+void	exec_builtin(t_shell *shell)
 {
 	if (!ft_strcmp(shell->cmd->arg[0], "echo"))
 		builtin_echo(shell);

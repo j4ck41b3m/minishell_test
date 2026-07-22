@@ -4,7 +4,7 @@
 # include "structs.h"
 
 t_status	is_builtin(t_cmd *cmd);
-void		ft_builtin(t_shell *shell);
+void		exec_builtin(t_shell *shell);
 
 void		builtin_echo(t_shell *msh);
 void		builtin_cd(t_shell *msh);

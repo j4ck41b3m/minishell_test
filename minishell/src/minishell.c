@@ -12,7 +12,7 @@ int	main(int ac, char **av, char **envp)
 	{
 		prompt = init_shell(&shell, envp);
 		str = readline(prompt);
-		while (1)
+		while (str)
 		{
 			if (parse(str, &shell))
 			{
