@@ -57,11 +57,17 @@ static char	*get_path(t_shell *shell, char *oldpwd)
 {
 	char	*path;
 
+	path = NULL;
 	if (shell->cmd->argc == 1)
 		path = env_get(shell->env, "HOME");
 	else
 	{
-		if (shell->cmd->arg[1][0] != '/')
+		if (ft_strcmp(shell->cmd->arg[1], "-") == 0)
+		{
+			path = env_get(shell->env, "OLDPWD");
+			return(path);
+		}
+		else if (shell->cmd->arg[1][0] != '/')
 			path = ft_strjoin(oldpwd, "/");
 		else
 			path = ft_strdup("");
