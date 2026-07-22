@@ -1,6 +1,12 @@
 #include "minishell.h"
 #include "libft.h"
 
+/**
+ * @brief Duplicates the environment list
+ * 
+ * @param env The environment list to duplicate
+ * @return The environment list duplicated 
+ */
 static t_env	*env_dup(t_env *env)
 {
 	t_env	*new_list;
@@ -23,6 +29,11 @@ static t_env	*env_dup(t_env *env)
 	return (new_list);
 }
 
+/**
+ * @brief Sorts a environment list
+ * 
+ * @param env The environment list to sort
+ */
 static void	env_sort(t_env *env)
 {
 	t_env	*i;
@@ -51,6 +62,12 @@ static void	env_sort(t_env *env)
 	}
 }
 
+/**
+ * @brief Prints a line of the environment list
+ * 
+ * @param key The key to print
+ * @param value The value to print
+ */
 static void	print_export_entry(const char *key, const char *value)
 {
 	if (value && ft_strlen(value) > 0)
@@ -59,6 +76,11 @@ static void	print_export_entry(const char *key, const char *value)
 		printf("declare -x %s\n", key);
 }
 
+/**
+ * @brief Prints the formatted and sorted environment list
+ * 
+ * @param shell The global status of minishell
+ */
 void	export_no_args(t_shell *shell)
 {
 	t_env	*copy;

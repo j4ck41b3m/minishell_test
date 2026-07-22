@@ -1,6 +1,12 @@
 #include "minishell.h"
 #include "libft.h"
 
+/**
+ * @brief 
+ * 
+ * @param shell The global status of minishell
+ * @param i The index of the message
+ */
 static void	error_key(t_shell *shell, int i)
 {
 	char		*tmp;
@@ -17,6 +23,14 @@ static void	error_key(t_shell *shell, int i)
 	free_mem(msg);
 }
 
+/**
+ * @brief Get the key object
+ * 
+ * @param shell The global status of minishell
+ * @param i The index of the key to get
+ * @param j A pointer to the index of the character of the word
+ * @return The key object
+ */
 static char	*get_key(t_shell *shell, int i, int *j)
 {
 	int	start;
@@ -33,6 +47,13 @@ static char	*get_key(t_shell *shell, int i, int *j)
 	return (ft_substr(shell->cmd->arg[i], start, *j - start));
 }
 
+/**
+ * @brief Get the value object
+ * 
+ * @param str The string from get the value
+ * @param i A pointer to de index of the character of the word
+ * @return The value object
+ */
 static char	*get_value(char *str, int *i)
 {
 	int	start;
@@ -45,6 +66,11 @@ static char	*get_value(char *str, int *i)
 	return (ft_substr(str, start, *i - start));
 }
 
+/**
+ * @brief Adds to the environment list a new variable
+ * 
+ * @param shell The global status of minishell
+ */
 void	export_with_args(t_shell *shell)
 {
 	char	*key;
@@ -67,5 +93,4 @@ void	export_with_args(t_shell *shell)
 		free(value);
 		i++;
 	}
-
 }
