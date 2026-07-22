@@ -29,6 +29,7 @@
 # include "shell.h"
 # include "parser.h"
 # include "utils.h"
+# include "signals.h"
 
 # include "builtins.h"
 # include "executor.h"

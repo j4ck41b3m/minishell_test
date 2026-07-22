@@ -53,3 +53,21 @@ void	free_mem(void *ptr)
 	free(ptr);
 	ptr = NULL;
 }
+
+/**
+ * @brief Frees the memory allocated by a double pointer void
+ * 
+ * @param ptr The pointer to free
+ */
+void	free_mem_all(char **ptr)
+{
+	int	i;
+
+	if (!ptr)
+		return ;
+	i = 0;
+	while (ptr[i])
+		free_mem(ptr[i++]);
+	free(ptr);
+	ptr = NULL;
+}

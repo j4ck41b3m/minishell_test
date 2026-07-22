@@ -26,12 +26,37 @@ void	execute_single(t_shell *shell)
 	classify_cmd(&shell->cmd);
 	if (shell->cmd->is_builtin)
 		ft_builtin(shell);
+	else
+		exec_cmd(shell);
 	return ;
 }
 
 void	execute_pipeline(t_shell *shell)
 {
-	(void)shell;
+	pid_t	pid;
+
+	while (shell->cmd)
+	{
+		if (!ft_isascii(shell->cmd->arg[0]))
+		{
+			shell->last_status = 1;
+			break ;
+		}
+		shell->cmd = ft_split_shell(shell, shell->cmd->arg, 32);
+		if (shell->cmd->is_builtin)
+			ft_builtin(shell->cmd);
+		else
+		{
+			g_signal = S_CMD;
+			pid = fork();
+			if (pid == 0)
+				execute_single(shell);
+			else
+				waitpid(-1, shell->cmd->redirs->type, 0);
+			handle_status(shell);
+		}
+		next_cmd(shell);
+	}
 	return ;
 }
 
