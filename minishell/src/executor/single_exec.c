@@ -32,10 +32,11 @@ char	*get_cmd_path(char *cmd, t_env *env)
 
 void	exec_cmd(t_shell *msh)
 {
+/*
 	char	*cmd_path;
-//	char	**envp;
+	char	**envp;
 
-//	envp = env_to_array(msh);
+	envp = env_to_array(msh);
 	if (msh->cmd->redirs->type != 0)
 		dup2(msh->cmd->redirs->type, STDIN_FILENO);
 	if (msh->cmd->redirs->type != 1)
@@ -46,6 +47,16 @@ void	exec_cmd(t_shell *msh)
 		free_mem(cmd_path);
 		cmd_path = msh->cmd->arg[0];
 	}
-//	execve(cmd_path, msh->cmd->arg, envp);
+	execve(cmd_path, msh->cmd->arg, envp);
 	exit(127);
+*/
+	char	*cmd;
+	char	*tmp;
+
+	tmp = ft_strjoin("minishell: ", msh->cmd->arg[0]);
+	cmd = ft_strjoin(tmp, ": command not found");
+	ft_putendl_fd(cmd, 2);
+	free(cmd);
+	free(tmp);
+	msh->last_status = 127;
 }
