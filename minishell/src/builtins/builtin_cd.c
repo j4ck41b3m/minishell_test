@@ -58,7 +58,7 @@ static char	*get_path(t_shell *shell, char *oldpwd)
 	char	*path;
 
 	path = NULL;
-	if (shell->cmd->argc == 1)
+	if (shell->cmd->argc == 1 || !ft_strcmp(shell->cmd->arg[1], "~"))
 		path = env_get(shell->env, "HOME");
 	else
 	{
@@ -107,6 +107,6 @@ void	builtin_cd(t_shell *msh)
 			env_set(&msh->env, "PWD", path);
 		}
 	}
-	free_mem(path);
-	free_mem(oldpwd);
+	free(path);
+	free(oldpwd);
 }

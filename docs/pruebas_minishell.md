@@ -1,6 +1,8 @@
 # Test for minishell
 
-## Echo                 <font color=green> Realizadas ✓</font> 
+## Echo
+
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
 
 ```bash
 echo
@@ -58,6 +60,8 @@ export a b=$LESS $USER $HOME=la $COLORTERM=pa c=d
 
 ## cd
 
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
+
 ```bash
 directorio existe
 directorio no existe
@@ -72,6 +76,8 @@ cd directorio con distintos permisos
 
 ## Env
 
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
+
 ```bash
 env
 env lalal
@@ -80,9 +86,13 @@ env directorio
 
 ## pwd
 
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
+
 ```bash
 con y sin argumentos
 ```
+
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
 
 ## unset
 

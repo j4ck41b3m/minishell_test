@@ -18,9 +18,9 @@ static void	error_key(t_shell *shell, int i)
 	msg = ft_strjoin(tmp, "not a valid identifier");
 	ft_putendl_fd(msg, 2);
 	shell->last_status = 1;
-	free_mem(path);
-	free_mem(tmp);
-	free_mem(msg);
+	free(path);
+	free(tmp);
+	free(msg);
 }
 
 /**
@@ -56,14 +56,18 @@ static char	*get_key(t_shell *shell, int i, int *j)
  */
 static char	*get_value(char *str, int *i)
 {
-	int	start;
+	char	*value;
+	int		start;
 
 	if (str && str[*i] == '=')
 		(*i)++;
+	else
+		return (NULL);
 	start = *i;
 	while (str && str[*i])
 		(*i)++;
-	return (ft_substr(str, start, *i - start));
+	value = ft_substr(str, start, *i - start);
+	return (value);
 }
 
 /**
@@ -87,8 +91,7 @@ void	export_with_args(t_shell *shell)
 		key = get_key(shell, i, &j);
 		if (key)
 			value = get_value(shell->cmd->arg[i], &j);
-		if (value)
-			env_set(&shell->env, key, value);
+		env_set(&shell->env, key, value);
 		free(key);
 		free(value);
 		i++;

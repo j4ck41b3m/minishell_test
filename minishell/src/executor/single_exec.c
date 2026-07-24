@@ -18,13 +18,13 @@ char	*get_cmd_path(char *cmd, t_env *env)
 	{
 		tmp_str = ft_strjoin(paths[i], "/");
 		complete_path = ft_strjoin(tmp_str, cmd);
-		free_mem(tmp_str);
+		free(tmp_str);
 		if (!access(complete_path, X_OK))
 		{
 			free_mem_all(paths);
 			return (complete_path);
 		}
-		free_mem(complete_path);
+		free(complete_path);
 	}
 	free_mem_all(paths);
 	return (NULL);

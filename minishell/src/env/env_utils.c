@@ -44,8 +44,10 @@ void	env_set(t_env **env, const char *key, const char *value)
 		if (ft_strlen(key) == ft_strlen(aux->key) && ft_strncmp(key, aux->key,
 				ft_strlen(key)) == 0)
 		{
-			free(aux->value);
-			aux->value = ft_strdup(value);
+			if (aux->value)
+				free(aux->value);
+			if (value)
+				aux->value = ft_strdup(value);
 			return ;
 		}
 		aux = aux->next;

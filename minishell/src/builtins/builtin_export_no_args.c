@@ -17,13 +17,16 @@ static t_env	*env_dup(t_env *env)
 	cur = env;
 	while (cur)
 	{
-		node = new_env(cur->key, cur->value);
-		if (!node)
+		if (ft_strcmp(cur->key, "_"))
 		{
-			free_env(&new_list);
-			return (NULL);
+			node = new_env(cur->key, cur->value);
+			if (!node)
+			{
+				free_env(&new_list);
+				return (NULL);
+			}
+			add_env(&new_list, node);
 		}
-		add_env(&new_list, node);
 		cur = cur->next;
 	}
 	return (new_list);
@@ -70,7 +73,7 @@ static void	env_sort(t_env *env)
  */
 static void	print_export_entry(const char *key, const char *value)
 {
-	if (value && ft_strlen(value) > 0)
+	if (value)
 		printf("declare -x %s=\"%s\"\n", key, value);
 	else
 		printf("declare -x %s\n", key);

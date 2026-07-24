@@ -21,12 +21,17 @@ t_env	*new_env(const char *key, const char *value)
 		free(env);
 		return (NULL);
 	}
-	env->value = ft_strdup(value);
-	if (env->value == NULL)
+	if (!value)
+		env->value = NULL;
+	else
 	{
-		free(env->key);
-		free(env);
-		return (NULL);
+		env->value = ft_strdup(value);
+		if (env->value == NULL)
+		{
+			free(env->key);
+			free(env);
+			return (NULL);
+		}
 	}
 	env->next = NULL;
 	return (env);
