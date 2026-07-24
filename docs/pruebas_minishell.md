@@ -34,6 +34,8 @@ echo '$'"HOME"
 
 ## Export
 
+<div align=center>     <font color=red> Pendientes x</font>     </div>
+
 ```bash
 export a=b
 export b=wawa
@@ -92,9 +94,9 @@ env directorio
 con y sin argumentos
 ```
 
-<div align=center>     <font color=green> Completadas ✓</font>     </div>
-
 ## unset
+
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
 
 ```bash
 con y sin argumentos
@@ -102,6 +104,8 @@ varios argumentos
 ```
 
 ## exit 
+
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
 
 ```bash
 exit

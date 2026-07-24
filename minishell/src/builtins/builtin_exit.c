@@ -27,11 +27,7 @@ static int	check_exit_args(t_shell *msh)
 		while (msh->cmd->arg[1][++i])
 		{
 			if (!ft_isdigit(msh->cmd->arg[1][i]))
-			{
-				printf("exit: %s: numeric argument required\n",
-					msh->cmd->arg[1]);
 				return (2);
-			}
 		}
 		return (ft_atoi(msh->cmd->arg[1]));
 	}
@@ -45,9 +41,22 @@ static int	check_exit_args(t_shell *msh)
  */
 void	builtin_exit(t_shell *msh)
 {
+	char	*tmp;
+	char	*msg;
+
 	ft_putendl_fd("exit", 2);
 	msh->last_status = check_exit_args(msh);
-	if (msh->last_status == 0)
+	if (msh->last_status == 1)
+		ft_putendl_fd("minishell: exit: too many arguments", 2);
+	else if (msh->last_status == 2)
+	{
+		tmp = ft_strjoin("minishell: exit: ", msh->cmd->arg[1]);
+		msg = ft_strjoin(tmp, ": numeric argument required");
+		free(tmp);
+		ft_putendl_fd(msg, 2);
+		free(msg);
 		exit(msh->last_status);
-	ft_putendl_fd("exit: too many arguments", 2);
+	}
+	else
+		exit(msh->last_status);
 }
