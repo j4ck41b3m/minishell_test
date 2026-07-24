@@ -57,7 +57,6 @@ void	execute_pipeline(t_shell *shell)
 		}
 		next_cmd(shell);
 	}
-	return ;
 }
 
 void	executor(t_shell *shell)

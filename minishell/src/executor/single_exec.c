@@ -32,7 +32,6 @@ char	*get_cmd_path(char *cmd, t_env *env)
 
 void	exec_cmd(t_shell *msh)
 {
-/*
 	char	*cmd_path;
 	char	**envp;
 
@@ -49,8 +48,8 @@ void	exec_cmd(t_shell *msh)
 	}
 	execve(cmd_path, msh->cmd->arg, envp);
 	exit(127);
-*/
-	char	*cmd;
+
+	/* char	*cmd;
 	char	*tmp;
 
 	tmp = ft_strjoin("minishell: ", msh->cmd->arg[0]);
@@ -58,5 +57,5 @@ void	exec_cmd(t_shell *msh)
 	ft_putendl_fd(cmd, 2);
 	free(cmd);
 	free(tmp);
-	msh->last_status = 127;
+	msh->last_status = 127; */
 }

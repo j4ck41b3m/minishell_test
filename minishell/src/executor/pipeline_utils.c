@@ -1,4 +1,5 @@
 #include "minishell.h"
+#include "libft.h"
 
 void	handle_status(t_shell *msh)
 {
@@ -23,4 +24,44 @@ void	next_cmd(t_shell *msh)
 	mycmd = msh->cmd;
 	msh->cmd = msh->cmd->next;
 	free_mem(mycmd);
+}
+
+/**
+ * @brief Converts the list into an array
+ *
+ * This function converts the enviroment list into an array chain in a 
+ * "key=value" form, where each array element rpresents an enviroment variable
+ * The arrayś last element is NULL
+ *
+ * @param msh Shell pointer
+ * @return Array chain that represents the enviroment variables
+ * in the "key=value" format
+ */
+char	**env_to_array(t_shell *msh)
+{
+	int		len;
+	t_env	*tmp;
+	char	**ret;
+	char	*tmp_str;
+
+	len = 1;
+	tmp = msh->env;
+	while (tmp)
+	{
+		len++;
+		tmp = tmp->next;
+	}
+	ret = malloc((sizeof(char *) * len) + 1);
+	tmp = msh->env;
+	len = 0;
+	while (tmp)
+	{
+		tmp_str = ft_strjoin(tmp->key, "=");
+		ret[len] = ft_strjoin(tmp_str, tmp->value);
+		free_mem(tmp_str);
+		tmp = tmp->next;
+		len++;
+	}
+	ret[len] = NULL;
+	return (ret);
 }
