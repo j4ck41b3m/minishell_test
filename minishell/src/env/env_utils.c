@@ -19,7 +19,11 @@ char	*env_get(t_env *env, const char *key)
 	{
 		if (ft_strlen(key) == ft_strlen(aux->key) && ft_strncmp(key, aux->key,
 				ft_strlen(key)) == 0)
+		{
+			if (!aux->value)
+				return (ft_strdup(""));
 			return (ft_strdup(aux->value));
+		}
 		aux = aux->next;
 	}
 	return (NULL);
@@ -41,13 +45,17 @@ void	env_set(t_env **env, const char *key, const char *value)
 	aux = *env;
 	while (aux)
 	{
-		if (ft_strlen(key) == ft_strlen(aux->key) && ft_strncmp(key, aux->key,
-				ft_strlen(key)) == 0)
+		if (ft_strcmp(key, aux->key) == 0)
 		{
-			if (aux->value)
+			if (aux->value && value)
 				free(aux->value);
 			if (value)
 				aux->value = ft_strdup(value);
+/*			else
+			{
+				free(aux->value);
+				aux->value =NULL;
+			}*/
 			return ;
 		}
 		aux = aux->next;

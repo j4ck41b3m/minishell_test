@@ -21,8 +21,10 @@ void	builtin_env(t_shell *msh)
 	{
 		if (!ft_strcmp(tmp->key, "_\0"))
 			printf("_=/usr/bin/env\n");
-		else
+		else if (tmp->value)
 			printf("%s=%s\n", tmp->key, tmp->value);
+		else
+			printf("%s\n", tmp->key);
 		tmp = tmp->next;
 	}
 	msh->last_status = 0;

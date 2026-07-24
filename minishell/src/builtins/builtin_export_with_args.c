@@ -35,7 +35,7 @@ static char	*get_key(t_shell *shell, int i, int *j)
 {
 	int	start;
 
-	if (shell->cmd->arg[i][*j] == '=')
+	if (shell->cmd->arg[i][*j] != '_' && !ft_isalpha(shell->cmd->arg[i][*j]))
 	{
 		error_key(shell, i);
 		return (NULL);
@@ -93,7 +93,8 @@ void	export_with_args(t_shell *shell)
 			value = get_value(shell->cmd->arg[i], &j);
 		env_set(&shell->env, key, value);
 		free(key);
-		free(value);
+		if (value)
+			free(value);
 		i++;
 	}
 }
