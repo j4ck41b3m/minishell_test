@@ -43,7 +43,15 @@ static char	*get_key(t_shell *shell, int i, int *j)
 	start = *j;
 	while (shell->cmd->arg[i] && shell->cmd->arg[i][*j] != '='
 		&& shell->cmd->arg[i][*j])
+	{
+		if (shell->cmd->arg[i][*j] != '_' && !ft_isalpha(shell->cmd->arg[i][*j])
+			&& !ft_isdigit(shell->cmd->arg[i][*j]))
+		{
+			error_key(shell, i);
+			return (NULL);
+		}
 		(*j)++;
+	}
 	return (ft_substr(shell->cmd->arg[i], start, *j - start));
 }
 

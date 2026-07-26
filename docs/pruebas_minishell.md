@@ -35,7 +35,7 @@ echo '$'"HOME"
 
 ## Export
 
-<div align=center>     <font color=red> Pendientes x</font>     </div>
+<div align=center>     <font color=green> Pendientes ✓</font>     </div>
 
 ```bash
 export a=b
@@ -49,12 +49,12 @@ export a===
 export a3=l
 export 2a=lala
 export !a=ma
-export $USER=la     x
-export $USER=$TERM  x
-export $USER=$TERM$HOME x
-export $USER=$TERM$HOM  x
-export $HOME=$USER      x
-export $USER$SHLVL      x
+export $USER=la
+export $USER=$TERM
+export $USER=$TERM$HOME
+export $USER=$TERM$HOM
+export $HOME=$USER
+export $USER$SHLVL
 export
            export
 export ""
@@ -328,7 +328,7 @@ env NUEVO=valor
 env -i
 ```
 
-11. export (casos avanzados)
+### 11. export (casos avanzados)
 
 ```bash
 export
