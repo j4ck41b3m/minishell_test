@@ -7,12 +7,13 @@ char	*get_cmd_path(char *cmd, t_env *env)
 	int		i;
 	char	*tmp_str;
 	char	*complete_path;
+	char	*tmp;
 
-	while (env && ft_strncmp(env->key, "PATH", 4))
-		env = env->next;
 	if (!env)
 		return (NULL);
-	paths = ft_split(env->key, ':');
+	tmp = env_get(env, "PATH");
+	paths = ft_split(tmp, ':');
+	free_mem(tmp);
 	i = -1;
 	while (paths[++i])
 	{
@@ -34,21 +35,24 @@ void	exec_cmd(t_shell *msh)
 {
 	char	*cmd_path;
 	char	**envp;
+	pid_t	pid;
 
 	envp = env_to_array(msh);
-	if (msh->cmd->redirs->type != 0)
-		dup2(msh->cmd->redirs->type, STDIN_FILENO);
-	if (msh->cmd->redirs->type != 1)
-		dup2(msh->cmd->redirs->type, STDOUT_FILENO);
 	cmd_path = get_cmd_path(msh->cmd->arg[0], msh->env);
+	//printf("%s\n",cmd_path);
 	if (!ft_isalnum(msh->cmd->arg[0][0]))
 	{
 		free_mem(cmd_path);
 		cmd_path = msh->cmd->arg[0];
 	}
-	execve(cmd_path, msh->cmd->arg, envp);
-	exit(127);
-
+	pid = fork();
+	if (pid == 0)
+	{
+		execve(cmd_path, msh->cmd->arg, envp);
+	}
+	waitpid(-1, &msh->last_status, 0);
+	free_mem_all(envp);
+	free_mem(cmd_path);
 	/* char	*cmd;
 	char	*tmp;
 

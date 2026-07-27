@@ -34,8 +34,6 @@ void	execute_single(t_shell *shell)
 
 void	execute_pipeline(t_shell *shell)
 {
-	pid_t	pid;
-
 	while (shell->cmd)
 	{
 		if (!ft_isascii(shell->cmd->arg[0][0]))
@@ -48,24 +46,15 @@ void	execute_pipeline(t_shell *shell)
 		else
 		{
 			g_signal = S_CMD;
-			pid = fork();
-			if (pid == 0)
-				execute_single(shell);
-			else
-				waitpid(-1, &shell->last_status, 0);
+			execute_single(shell);
 			handle_status(shell);
 		}
-		next_cmd(shell);
+		shell->cmd = shell->cmd->next;
 	}
 }
 
 void	executor(t_shell *shell)
 {
-	if (!shell->cmd)
-	{
-		printf("no command\n");
-		return ;
-	}
 	if (!prepare_redirections(shell))
 		return ;
 	if (!shell->cmd->next)
