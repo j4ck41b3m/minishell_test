@@ -36,14 +36,16 @@ void	exec_cmd(t_shell *msh)
 	char	*cmd_path;
 	char	**envp;
 	pid_t	pid;
+	int	owns_cmd_path;
 
 	envp = env_to_array(msh);
 	cmd_path = get_cmd_path(msh->cmd->arg[0], msh->env);
-	//printf("%s\n",cmd_path);
+	owns_cmd_path = 1;
 	if (!ft_isalnum(msh->cmd->arg[0][0]))
 	{
 		free_mem(cmd_path);
 		cmd_path = msh->cmd->arg[0];
+		owns_cmd_path = 0;
 	}
 	pid = fork();
 	if (pid == 0)
@@ -52,14 +54,6 @@ void	exec_cmd(t_shell *msh)
 	}
 	waitpid(-1, &msh->last_status, 0);
 	free_mem_all(envp);
-	free_mem(cmd_path);
-	/* char	*cmd;
-	char	*tmp;
-
-	tmp = ft_strjoin("minishell: ", msh->cmd->arg[0]);
-	cmd = ft_strjoin(tmp, ": command not found");
-	ft_putendl_fd(cmd, 2);
-	free(cmd);
-	free(tmp);
-	msh->last_status = 127; */
+	if (owns_cmd_path)
+		free_mem(cmd_path);
 }

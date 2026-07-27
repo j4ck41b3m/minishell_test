@@ -58,7 +58,10 @@ void	executor(t_shell *shell)
 	if (!prepare_redirections(shell))
 		return ;
 	if (!shell->cmd->next)
+	{
+		g_signal = S_CMD;
 		execute_single(shell);
+	}
 	else
 		execute_pipeline(shell);
 }

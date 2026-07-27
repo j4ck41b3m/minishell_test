@@ -31,18 +31,16 @@ void	sigint_handler(int sig)
 	(void)sig;
 	if (g_signal == S_BASE || g_signal == S_SIGINT)
 	{
-		rl_on_new_line();
-		rl_redisplay();
 		ft_putstr_fd("\n", 1);
-		rl_replace_line("", 0);
 		rl_on_new_line();
+		rl_replace_line("", 0);
 		rl_redisplay();
+		g_signal = S_SIGINT;
 	}
 	else if (g_signal == S_CMD)
 	{
-		g_signal = S_SIGINT_CMD;
 		ft_putstr_fd("\n", 1);
-		rl_on_new_line();
+		g_signal = S_SIGINT_CMD;
 	}
 	else if (g_signal == S_HEREDOC)
 	{
