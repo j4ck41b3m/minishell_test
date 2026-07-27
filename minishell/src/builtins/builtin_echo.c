@@ -24,7 +24,7 @@ static void	print_word_and_space(char **str, int *i)
 		ft_putchar_fd(32, 1);
 }
 
-static void print_endl(t_shell *msh)
+static void	print_endl(t_shell *msh)
 {
 	if (!(msh->cmd->arg[1] && !ft_strncmp(msh->cmd->arg[1], "-n", 2)))
 		ft_putchar_fd(10, 1);

@@ -51,11 +51,6 @@ void	env_set(t_env **env, const char *key, const char *value)
 				free(aux->value);
 			if (value)
 				aux->value = ft_strdup(value);
-/*			else
-			{
-				free(aux->value);
-				aux->value =NULL;
-			}*/
 			return ;
 		}
 		aux = aux->next;

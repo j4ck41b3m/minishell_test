@@ -13,20 +13,21 @@ void	print_syntax_error(t_token *token)
 			2);
 	else if (!token->value)
 	{
+		ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
 		if (token->type == PIPE)
-			ft_putstr_fd("minishell: syntax error near unexpected token `|`", 2);
+			ft_putendl_fd("|`", 2);
 		else if (token->type == INPUT)
-			ft_putstr_fd("minishell: syntax error near unexpected token `<`", 2);
+			ft_putendl_fd("<`", 2);
 		else if (token->type == TRUNC)
-			ft_putstr_fd("minishell: syntax error near unexpected token `>`", 2);
+			ft_putendl_fd(">`", 2);
 		else if (token->type == APPEND)
-			ft_putstr_fd("minishell: syntax error near unexpected token `>>`", 2);
+			ft_putendl_fd(">>`", 2);
 		else if (token->type == HEREDOC)
-			ft_putstr_fd("minishell: syntax error near unexpected token `<<`", 2);
+			ft_putendl_fd("<<`", 2);
 	}
 	else
 	{
-		ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
-		ft_putendl_fd(token->value, 2);
+		ft_putstr_fd(token->value, 2);
+		ft_putendl_fd("`", 2);
 	}
 }
