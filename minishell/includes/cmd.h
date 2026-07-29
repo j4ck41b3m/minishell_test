@@ -25,6 +25,8 @@ typedef enum e_pstate
 typedef struct s_redir
 {
 	t_token_type	type;
+	int				redir_in;
+	int				redir_out;
 	char			*target;
 	bool			quoted;
 	struct s_redir	*next;

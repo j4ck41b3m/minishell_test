@@ -18,7 +18,11 @@ void	classify_cmd(t_cmd **cmd)
 
 t_status	prepare_redirections(t_shell *shell)
 {
-	(void)shell;
+	/* while (shell->cmd)
+	{
+		redirect(shell->cmd);
+		shell->cmd = shell->cmd->next;
+	} */
 	return (SUCCESS);
 }
 
