@@ -17,8 +17,12 @@ void	next_cmd(t_shell *msh)
 	t_cmd	*mycmd;
 
 	mycmd = msh->cmd;
+	if (mycmd->redirs->redir_in != 0)
+		close(mycmd->redirs->redir_in);
+	if (mycmd->redirs->redir_out != 1)
+		close(mycmd->redirs->redir_out);
 	msh->cmd = mycmd->next;
-	free_cmd(&mycmd);
+	msh->cmd->redirs = mycmd->redirs->next;
 }
 
 /**

@@ -1,7 +1,23 @@
 #include "minishell.h"
 #include "libft.h"
 
-static void	heredoc_loop(char *limit, int fd)
+void	connect_pipes(t_redir **myred)
+{
+	t_redir	*current;
+	int		fd[2];
+
+	current = *myred;
+	while (current->next)
+	{
+		pipe(fd);
+		if (current->redir_out == 1)
+			current->redir_out = fd[1];
+		current->next->redir_in = fd[0];
+		current = current->next;
+	}
+}
+
+void	heredoc_loop(char *limit, int fd)
 {
 	char	*line;
 
@@ -13,7 +29,7 @@ static void	heredoc_loop(char *limit, int fd)
 			exit(EXIT_SUCCESS);
 		ft_putstr_fd(line, fd);
 		ft_putchar_fd('\n', fd);
-		ft_memfree(line);
+		free_mem(line);
 	}
 }
 
@@ -31,37 +47,54 @@ int	heredoc(char *limit)
 	{
 		g_signal = S_HEREDOC;
 		close(fd[0]);
-		ft_heredoc_loop(limit, fd[1]);
+		heredoc_loop(limit, fd[1]);
 	}
 	g_signal = S_HEREDOC_END;
 	return (waitpid(-1, NULL, 0), close(fd[1]), fd[0]);
 }
 
-void	redirect(t_cmd *tmp)
+void	redirect(t_redir *tmp)
 {
 	int	fd;
 
-	print_cmd(tmp);
-	if (tmp->redirs->type == INPUT)
+	if (tmp->type == INPUT)
 	{
-		fd = open(tmp->redirs->target, O_RDONLY);
-		tmp->redirs->redir_in = fd;
+		fd = open(tmp->target, O_RDONLY);
+		tmp->redir_in = fd;
 	}
-	else if (tmp->redirs->type == TRUNC)
+	else if (tmp->type == TRUNC)
 	{
-		fd = open(tmp->redirs->target, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		tmp->redirs->redir_out = fd;
+		fd = open(tmp->target, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		tmp->redir_out = fd;
 	}
-	else if (tmp->redirs->type == APPEND)
+	else if (tmp->type == APPEND)
 	{
-		fd = open(tmp->redirs->target, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		tmp->redirs->redir_out = fd;
+		fd = open(tmp->target, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		tmp->redir_out = fd;
 	}
-	else if (tmp->redirs->type == HEREDOC)
+	else if (tmp->type == HEREDOC)
 	{
-		fd = ft_heredoc(tmp->redirs->target);
-		tmp->redirs->redir_in = fd;
+		fd = heredoc(tmp->target);
+		tmp->redir_in = fd;
 		if (g_signal != S_CANCEL_EXEC)
 			g_signal = S_BASE;
 	}
 }
+
+void	fill_redirs(t_cmd *mycmd)
+{
+	t_redir	*myred;
+
+	myred = mycmd->redirs;
+	while (myred)
+	{
+		myred->redir_in = STDIN_FILENO;
+		myred->redir_out = STDOUT_FILENO;
+		if (myred->type == INPUT || myred->type == TRUNC
+			|| myred->type == APPEND || myred->type == HEREDOC)
+			redirect(myred);
+		myred = myred->next;
+	}
+	connect_pipes(&mycmd->redirs);
+}
+

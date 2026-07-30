@@ -36,9 +36,16 @@ void	exec_cmd(t_shell *msh)
 	char	*cmd_path;
 	char	**envp;
 	pid_t	pid;
-	int	owns_cmd_path;
+	int		owns_cmd_path;
 
 	envp = env_to_array(msh);
+	if (msh->cmd->redirs)
+	{
+		if (msh->cmd->redirs->redir_in != 0)
+			dup2(msh->cmd->redirs->redir_in, STDIN_FILENO);
+		if (msh->cmd->redirs->redir_out != 1)
+			dup2(msh->cmd->redirs->redir_out, STDOUT_FILENO);
+	}
 	cmd_path = get_cmd_path(msh->cmd->arg[0], msh->env);
 	owns_cmd_path = 1;
 	if (!ft_isalnum(msh->cmd->arg[0][0]))
@@ -49,9 +56,7 @@ void	exec_cmd(t_shell *msh)
 	}
 	pid = fork();
 	if (pid == 0)
-	{
 		execve(cmd_path, msh->cmd->arg, envp);
-	}
 	waitpid(-1, &msh->last_status, 0);
 	free_mem_all(envp);
 	if (owns_cmd_path)

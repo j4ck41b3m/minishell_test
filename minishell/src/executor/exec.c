@@ -18,11 +18,15 @@ void	classify_cmd(t_cmd **cmd)
 
 t_status	prepare_redirections(t_shell *shell)
 {
-	/* while (shell->cmd)
+	t_cmd	*mycmd;
+
+	mycmd = shell->cmd;
+	print_cmd(shell->cmd);
+	while (mycmd)
 	{
-		redirect(shell->cmd);
-		shell->cmd = shell->cmd->next;
-	} */
+		fill_redirs(mycmd);
+		mycmd = mycmd->next;
+	}
 	return (SUCCESS);
 }
 
@@ -59,13 +63,15 @@ void	execute_pipeline(t_shell *shell)
 
 void	executor(t_shell *shell)
 {
-	if (!prepare_redirections(shell))
-		return ;
+	/* if (!prepare_redirections(shell))
+		return ; */
 	if (!shell->cmd->next)
 	{
 		g_signal = S_CMD;
 		execute_single(shell);
 	}
 	else
+	{
 		execute_pipeline(shell);
+	}
 }
