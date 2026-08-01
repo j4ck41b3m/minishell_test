@@ -55,8 +55,12 @@ void	builtin_exit(t_shell *msh)
 		free(tmp);
 		ft_putendl_fd(msg, 2);
 		free(msg);
+		end_shell(msh);
 		exit(msh->last_status);
 	}
 	else
+	{
+		end_shell(msh);	
 		exit(msh->last_status);
+	}
 }

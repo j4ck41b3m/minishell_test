@@ -1,6 +1,6 @@
 # Variables
 CC = cc
-CFLAGS = -Wall -Werror -Wextra -I/usr/include
+CFLAGS = -Wall -Werror -Wextra -I/usr/include -g
 INCLUDES = -I includes -I $(LIBFT_DIR)
 
 SRC_DIR = src
@@ -70,4 +70,14 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+# Memory testing rules
+valgrind: $(NAME)
+	@printf "$(GREEN)Running $(NAME) with Valgrind...$(RESET)\n"
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --track-fds=yes ./$(NAME)
+
+asan: fclean
+	@printf "$(GREEN)Compiling with AddressSanitizer...$(RESET)\n"
+	@$(MAKE) all CFLAGS="$(CFLAGS) -fsanitize=address"
+	@printf "$(GREEN)✓ Compiled with Asan. Run ./$(NAME) to test.$(RESET)\n"
+
+.PHONY: all clean fclean re valgrind asan
