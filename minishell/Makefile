@@ -10,6 +10,7 @@ LIBS = -lreadline
 
 NAME = minishell
 
+BLUE = \033[0;34m
 GREEN = \033[0;32m
 RESET = \033[0m
 
@@ -73,11 +74,11 @@ re: fclean all
 # Memory testing rules
 valgrind: $(NAME)
 	@printf "$(GREEN)Running $(NAME) with Valgrind...$(RESET)\n"
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --track-fds=yes ./$(NAME)
+	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --track-fds=yes ./$(NAME)
 
 asan: fclean
-	@printf "$(GREEN)Compiling with AddressSanitizer...$(RESET)\n"
-	@$(MAKE) all CFLAGS="$(CFLAGS) -fsanitize=address"
+	@printf "$(BLUE)Compiling with AddressSanitizer...$(RESET)\n"
+	@$(MAKE) --no-print-directory all CFLAGS="$(CFLAGS) -fsanitize=address"
 	@printf "$(GREEN)✓ Compiled with Asan. Run ./$(NAME) to test.$(RESET)\n"
 
 .PHONY: all clean fclean re valgrind asan

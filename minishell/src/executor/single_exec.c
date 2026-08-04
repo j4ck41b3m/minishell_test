@@ -48,16 +48,29 @@ void	exec_cmd(t_shell *msh)
 	}
 	cmd_path = get_cmd_path(msh->cmd->arg[0], msh->env);
 	owns_cmd_path = 1;
-	if (!ft_isalnum(msh->cmd->arg[0][0]))
+	if (!ft_strncmp(msh->cmd->arg[0], "./", 2))
 	{
-		free_mem(cmd_path);
 		cmd_path = msh->cmd->arg[0];
 		owns_cmd_path = 0;
 	}
-	pid = fork();
-	if (pid == 0)
-		execve(cmd_path, msh->cmd->arg, envp);
-	waitpid(-1, &msh->last_status, 0);
+	if (!cmd_path)
+	{
+		ft_putstr_fd("minishell: command not found: ",	2);
+		ft_putendl_fd(msh->cmd->arg[0], 2);
+		msh->last_status = 127;
+	}
+	else
+	{
+		pid = fork();
+		if (pid == 0)
+		if (execve(cmd_path, msh->cmd->arg, envp) == -1)
+			{
+				ft_putstr_fd("minishell: command not found: ",	2);
+				ft_putendl_fd(msh->cmd->arg[0], 2);
+				msh->last_status = 127;
+			}
+		waitpid(-1, &msh->last_status, 0);
+	}
 	free_mem_all(envp);
 	if (owns_cmd_path)
 		free_mem(cmd_path);
