@@ -1,0 +1,2 @@
+Tengo que limpiar los leaks de basic_env_vars.
+Después comprobar si leo correctamente con echo la variable _

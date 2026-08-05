@@ -9,6 +9,12 @@ char	*get_cmd_path(char *cmd, t_env *env)
 	char	*complete_path;
 	char	*tmp;
 
+	if (ft_strchr(cmd, '/'))
+	{
+		if (!access(cmd, F_OK))
+			return (ft_strdup(cmd));
+		return (NULL);
+	}
 	if (!env)
 		return (NULL);
 	tmp = env_get(env, "PATH");
@@ -20,7 +26,7 @@ char	*get_cmd_path(char *cmd, t_env *env)
 		tmp_str = ft_strjoin(paths[i], "/");
 		complete_path = ft_strjoin(tmp_str, cmd);
 		free(tmp_str);
-		if (!access(complete_path, X_OK))
+		if (!access(complete_path, F_OK))
 		{
 			free_mem_all(paths);
 			return (complete_path);
@@ -37,7 +43,9 @@ void	exec_cmd(t_shell *msh)
 	char	**envp;
 	pid_t	pid;
 	int		owns_cmd_path;
+	char	*msg_error;
 
+	pid = -1;
 	envp = env_to_array(msh);
 	if (msh->cmd->redirs)
 	{
@@ -48,29 +56,31 @@ void	exec_cmd(t_shell *msh)
 	}
 	cmd_path = get_cmd_path(msh->cmd->arg[0], msh->env);
 	owns_cmd_path = 1;
-	if (!ft_strncmp(msh->cmd->arg[0], "./", 2))
-	{
-		cmd_path = msh->cmd->arg[0];
-		owns_cmd_path = 0;
-	}
 	if (!cmd_path)
 	{
 		ft_putstr_fd("minishell: command not found: ",	2);
 		ft_putendl_fd(msh->cmd->arg[0], 2);
 		msh->last_status = 127;
+		free_mem_all(envp);
+		return ;
 	}
-	else
+	pid = fork();
+	if (pid == 0)
 	{
-		pid = fork();
-		if (pid == 0)
 		if (execve(cmd_path, msh->cmd->arg, envp) == -1)
-			{
-				ft_putstr_fd("minishell: command not found: ",	2);
-				ft_putendl_fd(msh->cmd->arg[0], 2);
-				msh->last_status = 127;
-			}
-		waitpid(-1, &msh->last_status, 0);
+		{
+			msg_error = strerror(errno);
+			ft_putstr_fd(msh->name, 2);
+			ft_putstr_fd(": ", 2);
+			ft_putstr_fd(msg_error, 2);
+			ft_putstr_fd(": ", 2);
+			ft_putendl_fd(msh->cmd->arg[0], 2);
+			exit(127);
+//				msh->last_status = 127;
+		}
 	}
+	if (pid > 0)
+		waitpid(pid, &msh->last_status, 0);
 	free_mem_all(envp);
 	if (owns_cmd_path)
 		free_mem(cmd_path);

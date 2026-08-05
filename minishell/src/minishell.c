@@ -9,7 +9,7 @@ int	main(int ac, char **av, char **envp)
 	(void)av;
 	if (ac == 1)
 	{
-		init_shell(&shell, envp);
+		init_shell(&shell, envp, av);
 		prompt = env_get(shell.env, "PS1");
 		shell.line = readline(prompt);
 		free(prompt);

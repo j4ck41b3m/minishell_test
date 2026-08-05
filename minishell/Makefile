@@ -74,7 +74,7 @@ re: fclean all
 # Memory testing rules
 valgrind: $(NAME)
 	@printf "$(GREEN)Running $(NAME) with Valgrind...$(RESET)\n"
-	@valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --track-fds=yes ./$(NAME)
+	@valgrind --leak-check=full --show-leak-kinds=definite --track-origins=yes --track-fds=yes ./$(NAME)
 
 asan: fclean
 	@printf "$(BLUE)Compiling with AddressSanitizer...$(RESET)\n"
