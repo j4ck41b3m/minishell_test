@@ -9,6 +9,7 @@ void	handle_status(t_shell *msh)
 		printf("%s: %s\n", msh->cmd->arg[0], "command not found");
 	if (g_signal == S_SIGINT_CMD)
 		msh->last_status = 130;
+	printf("Status is %d\n", msh->last_status);
 	g_signal = S_BASE;
 }
 
@@ -17,12 +18,15 @@ void	next_cmd(t_shell *msh)
 	t_cmd	*mycmd;
 
 	mycmd = msh->cmd;
-	if (mycmd->redirs->redir_in != 0)
-		close(mycmd->redirs->redir_in);
-	if (mycmd->redirs->redir_out != 1)
-		close(mycmd->redirs->redir_out);
-	msh->cmd = mycmd->next;
-	msh->cmd->redirs = mycmd->redirs->next;
+	while (mycmd->redirs)
+	{
+		if (mycmd->redirs->redir_in != 0)
+			close(mycmd->redirs->redir_in);
+		if (mycmd->redirs->redir_out != 1)
+			close(mycmd->redirs->redir_out);
+		mycmd->redirs = mycmd->redirs->next;
+	}
+	msh->cmd = msh->cmd->next;
 }
 
 /**

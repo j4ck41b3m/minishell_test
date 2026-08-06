@@ -1,18 +1,24 @@
 #include "minishell.h"
 #include "libft.h"
 
-void	connect_pipes(t_redir **myred)
+void	connect_pipes(t_cmd **myred)
 {
-	t_redir	*current;
+	t_cmd	*current;
 	int		fd[2];
 
 	current = *myred;
 	while (current->next)
 	{
 		pipe(fd);
-		if (current->redir_out == 1)
-			current->redir_out = fd[1];
-		current->next->redir_in = fd[0];
+		while (current->redirs)
+		{
+			if (current->redirs->next)
+				current->redirs = current->redirs->next;
+			else
+				current->redirs->redir_out = fd[1];
+		}
+		if (current->next && current->next->redirs)
+			current->next->redirs->redir_in = fd[0];
 		current = current->next;
 	}
 }
@@ -95,6 +101,5 @@ void	fill_redirs(t_cmd *mycmd)
 			redirect(myred);
 		myred = myred->next;
 	}
-	connect_pipes(&mycmd->redirs);
 }
 

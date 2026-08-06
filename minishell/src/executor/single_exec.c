@@ -41,47 +41,40 @@ void	exec_cmd(t_shell *msh)
 {
 	char	*cmd_path;
 	char	**envp;
-	pid_t	pid;
 	int		owns_cmd_path;
 	char	*msg_error;
 
-	pid = -1;
 	envp = env_to_array(msh);
-	if (msh->cmd->redirs)
+	while (msh->cmd->redirs)
 	{
 		if (msh->cmd->redirs->redir_in != 0)
 			dup2(msh->cmd->redirs->redir_in, STDIN_FILENO);
 		if (msh->cmd->redirs->redir_out != 1)
 			dup2(msh->cmd->redirs->redir_out, STDOUT_FILENO);
+		msh->cmd->redirs = msh->cmd->redirs->next;
 	}
 	cmd_path = get_cmd_path(msh->cmd->arg[0], msh->env);
 	owns_cmd_path = 1;
 	if (!cmd_path)
 	{
-		ft_putstr_fd("minishell: command not found: ",	2);
+		ft_putstr_fd("minishell: command not found: ", 2);
 		ft_putendl_fd(msh->cmd->arg[0], 2);
 		msh->last_status = 127;
 		free_mem_all(envp);
 		return ;
 	}
-	pid = fork();
-	if (pid == 0)
+	if (execve(cmd_path, msh->cmd->arg, envp) == -1)
 	{
-		if (execve(cmd_path, msh->cmd->arg, envp) == -1)
-		{
-			msg_error = strerror(errno);
-			ft_putstr_fd(msh->name, 2);
-			ft_putstr_fd(": ", 2);
-			ft_putstr_fd(msg_error, 2);
-			ft_putstr_fd(": ", 2);
-			ft_putendl_fd(msh->cmd->arg[0], 2);
-			exit(127);
-//				msh->last_status = 127;
-		}
+		msg_error = strerror(errno);
+		ft_putstr_fd(msh->name, 2);
+		ft_putstr_fd(": ", 2);
+		ft_putstr_fd(msg_error, 2);
+		ft_putstr_fd(": ", 2);
+		ft_putendl_fd(msh->cmd->arg[0], 2);
+		exit(127);
 	}
-	if (pid > 0)
-		waitpid(pid, &msh->last_status, 0);
 	free_mem_all(envp);
 	if (owns_cmd_path)
 		free_mem(cmd_path);
+	exit(127);
 }
