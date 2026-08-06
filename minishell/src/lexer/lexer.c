@@ -46,7 +46,7 @@ t_status	lexer_validate(t_token *tokens)
 			if (!tokens->next || tokens->next->type != WORD
 				|| !tokens->next->value || !tokens->next->value[0])
 			{
-				print_syntax_error(tokens->next);
+				print_syntax_error(tokens);
 				return (FAILURE);
 			}
 		}

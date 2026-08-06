@@ -1,5 +1,5 @@
-#include "minishell.h"
 #include "libft.h"
+#include "minishell.h"
 
 /**
  * @brief Prints a syntax error in standar error
@@ -8,7 +8,7 @@
  */
 void	print_syntax_error(t_token *token)
 {
-	if (!token)
+	if (!token || !token->next)
 		ft_putendl_fd("minishell: syntax error near unexpected token `newline`",
 			2);
 	else if (!token->value)
@@ -27,7 +27,10 @@ void	print_syntax_error(t_token *token)
 	}
 	else
 	{
+		ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
 		ft_putstr_fd(token->value, 2);
+		if (token->next && token->next->type == PIPE)
+			ft_putstr_fd(token->next->value, 2);
 		ft_putendl_fd("`", 2);
 	}
 }
