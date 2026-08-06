@@ -1,25 +1,92 @@
-#include "minishell.h"
 #include "libft.h"
+#include "minishell.h"
+
+/**
+ * @brief Updates environment variable SHLVL
+ * 
+ * @param shell The global status of minishell
+ */
+static void	update_shellevel(t_shell *shell)
+{
+	char	*shlvl;
+	int		new_value;
+
+	shlvl = env_get(shell->env, "SHLVL");
+	if (!shlvl)
+	{
+		add_env(&shell->env, new_env("SHLVL", "1"));
+		return ;
+	}
+	else
+	{
+		new_value = ft_atoi(shlvl);
+		free(shlvl);
+		if (new_value < 0)
+			new_value = 0;
+		new_value++;
+		shlvl = ft_itoa(new_value);
+		env_set(&shell->env, "SHLVL", shlvl);
+		free(shlvl);
+	}
+}
+
+/**
+ * @brief Updates a environment variable
+ * 
+ * @param env The environment list
+ * @param key The key to update
+ * @param new_value The new value to update
+ */
+static void	update_env_var(t_env *env, char *key, char *new_value)
+{
+	char	*value;
+
+	value = env_get(env, key);
+	if (value == NULL)
+		env_set(&env, key, new_value);
+	else
+		free(value);
+}
+
+/**
+ * @brief Sets the basic environment variables
+ * 
+ * @param shell The global status of minishell
+ */
+static void	basic_env_vars(t_shell *shell)
+{
+	char	*pwd;
+
+	pwd = getcwd(NULL, 0);
+	update_env_var(shell->env, "OLDPWD", NULL);
+	update_env_var(shell->env, "PWD", pwd);
+	update_env_var(shell->env, "MAIL", "bconejo-@student.42malaga.com");
+	update_env_var(shell->env, "_", "/usr/bin/env");
+	update_env_var(shell->env, "PS1",
+		"\033[38;5;229mminishell \033[0m% \033[37m");
+	update_shellevel(shell);
+	free(pwd);
+	return ;
+}
 
 /**
  * @brief Initializes a shell struct
  *
- * @param shell A pointer to the shell struct
+ * @param shell The global status of minishell
  * @param envp The system environment variables
- * @return The prompt of the shell
- */
-char	*init_shell(t_shell *shell, char **envp)
+  */
+void	init_shell(t_shell *shell, char **envp, char **av)
 {
 	shell->env = NULL;
 	shell->tokens = NULL;
 	shell->cmd = NULL;
+	shell->name = av[0];
+	shell->line = NULL;
 	shell->last_status = 0;
 	shell->running = 1;
 	env_init(&shell->env, envp);
-	printf("\033[3J\033[2J\033[H");
-	printf("Welcome to minishell!\n");
+	basic_env_vars(shell);
 	signal_init();
-	return (ft_strjoin(SOFT_YELLOW "minishell" RESET " % ", GRAY));
 }
 
 /**
@@ -29,6 +96,7 @@ char	*init_shell(t_shell *shell, char **envp)
  */
 void	end_shell(t_shell *shell)
 {
+	free(shell->line);
 	free_env(&shell->env);
 	free_cmd(&shell->cmd);
 	rl_clear_history();

@@ -15,11 +15,13 @@ typedef struct s_shell
 	t_env	*env;
 	t_token	*tokens;
 	t_cmd	*cmd;
+	char	*name;
+	char	*line;
 	int		last_status;
 	int		running;
 }			t_shell;
 
-char				*init_shell(t_shell *shell, char **envp);
+void				init_shell(t_shell *shell, char **envp, char **av);
 void				end_shell(t_shell *shell);
 
 #endif

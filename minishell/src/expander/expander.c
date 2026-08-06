@@ -1,4 +1,5 @@
 #include "minishell.h"
+#include "libft.h"
 
 /**
  * @brief Deletes the current token from the list
@@ -22,6 +23,39 @@ static t_token	*del_token(t_token **list, t_token *prev, t_token *curr)
 	free (curr->value);
 	free (curr);
 	return (next);
+}
+
+/**
+ * @brief Expands the content of token type WORD
+ * 
+ * @param value The content to expand
+ * @param env The environment list
+ * @param last_status The last state returned by the system
+ * @return The token's content expanded
+ */
+static char	*expand_word(char *value, t_env *env, int last_status)
+{
+	int		i;
+	char	*result;
+	char	*fragment;
+
+	result = ft_strdup("");
+	i = 0;
+	while (value[i])
+	{
+		if (value[i] == '\'')
+			fragment = extract_single_quoted(value, &i);
+		else if (value[i] == '"')
+			fragment = extract_double_quoted(value, &i, env, last_status);
+		else if (value[i] == '~')
+			fragment = expand_tilde(&i, env);
+		else if (value[i] == '$')
+			fragment = expand_variable(value, &i, env, last_status);
+		else
+			fragment = extract_plain_text(value, &i);
+		result = ft_strjoin_free(result, fragment);
+	}
+	return (result);
 }
 
 /**

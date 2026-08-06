@@ -1,5 +1,5 @@
-#include "minishell.h"
 #include "libft.h"
+#include "minishell.h"
 
 /**
  * @brief Prints the contents of the tokens list
@@ -35,7 +35,7 @@ void	print_token_list(t_token *token_list)
 
 /**
  * @brief Parses an input into a command list
- * 
+ *
  * @param input The input to parse
  * @param shell The global status of minishell
  * @return SUCCESS if it is parsed, FAILURE otherwise
@@ -55,10 +55,14 @@ t_status	parse(const char *input, t_shell *shell)
 		}
 		else
 		{
+			shell->last_status = 2;
 			free_tokenlst(&shell->tokens);
 			return (FAILURE);
 		}
 	}
 	else
+	{
+		shell->last_status = 2;
 		return (FAILURE);
+	}
 }

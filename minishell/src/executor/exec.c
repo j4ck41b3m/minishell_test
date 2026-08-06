@@ -34,7 +34,10 @@ void	execute_single(t_shell *shell)
 {
 	classify_cmd(&shell->cmd);
 	if (shell->cmd->is_builtin)
+	{
 		exec_builtin(shell);
+		return ;
+	}
 	else
 		exec_cmd(shell);
 	return ;

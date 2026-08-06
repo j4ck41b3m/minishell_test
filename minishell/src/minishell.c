@@ -1,33 +1,41 @@
 #include "minishell.h"
 #include "libft.h"
 
+static void	clearScreen(t_shell *shell)
+{
+	printf("\033[3J\033[2J\033[H");
+	printf("Welcome to %s!\n", shell->name + 2);
+}
+
 int	main(int ac, char **av, char **envp)
 {
-	char	*str;
-	char	*prompt;
 	t_shell	shell;
+	char	*prompt;
 
 	(void)av;
 	if (ac == 1)
 	{
-		prompt = init_shell(&shell, envp);
-		str = readline(prompt);
-		while (str)
+		init_shell(&shell, envp, av);
+		clearScreen(&shell);
+		prompt = env_get(shell.env, "PS1");
+		shell.line = readline(prompt);
+		free(prompt);
+		while (shell.line)
 		{
-			if (parse(str, &shell))
+			if (parse(shell.line, &shell))
 			{
-				add_history(str);
+				add_history(shell.line);
 				if (g_signal != S_SIGINT_CMD)
 					executor(&shell);
 				free_cmd(&shell.cmd);
 				g_signal = S_BASE;
 			}
-			free(str);
-			str = readline(prompt);
+			free(shell.line);
+			prompt = env_get(shell.env, "PS1");
+			shell.line = readline(prompt);
+			free(prompt);
 		}
-		free(prompt);
 		end_shell(&shell);
-		free(str);
 		return (0);
 	}
 	printf("Error!\n");
