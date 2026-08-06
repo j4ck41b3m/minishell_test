@@ -1,10 +1,15 @@
 #include "libft.h"
 #include "minishell.h"
 
+/**
+ * @brief Updates environment variable SHLVL
+ * 
+ * @param shell The global status of minishell
+ */
 static void	update_shellevel(t_shell *shell)
 {
 	char	*shlvl;
-	int	new_value;
+	int		new_value;
 
 	shlvl = env_get(shell->env, "SHLVL");
 	if (!shlvl)
@@ -25,33 +30,53 @@ static void	update_shellevel(t_shell *shell)
 	}
 }
 
+/**
+ * @brief Updates a environment variable
+ * 
+ * @param env The environment list
+ * @param key The key to update
+ * @param new_value The new value to update
+ */
+static void	update_env_var(t_env *env, char *key, char *new_value)
+{
+	char	*value;
+
+	value = env_get(env, key);
+	if (value == NULL)
+		env_set(&env, key, new_value);
+	else
+		free(value);
+}
+
+/**
+ * @brief Sets the basic environment variables
+ * 
+ * @param shell The global status of minishell
+ */
 static void	basic_env_vars(t_shell *shell)
 {
-	if (env_get(shell->env, "OLDPWD") == NULL)
-		env_set(&shell->env, "OLDPWD", NULL);
-	if (env_get(shell->env, "PWD") == NULL)
-		env_set(&shell->env, "PWD", getcwd(NULL, 0));
-	if (env_get(shell->env, "MAIL") == NULL)
-		env_set(&shell->env, "MAIL", "bconejo-@student.42malaga.com");
-	if (env_get(shell->env, "_") == NULL)
-		env_set(&shell->env, "_", "/usr/bin/env");
-	if (env_get(shell->env, "PS1") == NULL)
-		env_set(&shell->env, "PS1", "\033[38;5;229mminishell \033[0m% \033[37m");
+	char	*pwd;
+
+	pwd = getcwd(NULL, 0);
+	update_env_var(shell->env, "OLDPWD", NULL);
+	update_env_var(shell->env, "PWD", pwd);
+	update_env_var(shell->env, "MAIL", "bconejo-@student.42malaga.com");
+	update_env_var(shell->env, "_", "/usr/bin/env");
+	update_env_var(shell->env, "PS1",
+		"\033[38;5;229mminishell \033[0m% \033[37m");
 	update_shellevel(shell);
+	free(pwd);
 	return ;
 }
 
 /**
  * @brief Initializes a shell struct
  *
- * @param shell A pointer to the shell struct
+ * @param shell The global status of minishell
  * @param envp The system environment variables
- * @return The prompt of the shell
- */
+  */
 void	init_shell(t_shell *shell, char **envp, char **av)
 {
-	char	*tmp;
-
 	shell->env = NULL;
 	shell->tokens = NULL;
 	shell->cmd = NULL;
@@ -60,17 +85,7 @@ void	init_shell(t_shell *shell, char **envp, char **av)
 	shell->last_status = 0;
 	shell->running = 1;
 	env_init(&shell->env, envp);
-	tmp = env_get(shell->env, "PS1");
-	if (!tmp)
-	{
-		add_env(&shell->env, new_env("PS1",
-				"\033[38;5;229mminishell \033[0m% \033[37m"));
-	}
-	else
-		free(tmp);
-	basic_env_vars(shell);	
-	printf("\033[3J\033[2J\033[H");
-	printf("Welcome to %s!\n", shell->name+2);
+	basic_env_vars(shell);
 	signal_init();
 }
 

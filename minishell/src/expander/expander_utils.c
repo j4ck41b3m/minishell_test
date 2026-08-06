@@ -8,7 +8,7 @@
  * @param i A pointer to an index
  * @return The extracted text
  */
-static char	*extract_single_quoted(char *value, int *i)
+char	*extract_single_quoted(char *value, int *i)
 {
 	char	*result;
 	int		start;
@@ -25,6 +25,24 @@ static char	*extract_single_quoted(char *value, int *i)
 }
 
 /**
+ * @brief Expand the value of ~
+ * 
+ * @param i A pointer to a index
+ * @param env The environment list
+ * @return The value of HOME
+ */
+char	*expand_tilde(int *i, t_env *env)
+{
+	char	*home;
+
+	home = env_get(env, "HOME");
+	if (!home)
+		home = ft_strdup("");
+	(*i)++;
+	return (home);
+}
+
+/**
  * @brief Expands the value of a environment variable
  * 
  * @param value The key of the variable
@@ -33,7 +51,7 @@ static char	*extract_single_quoted(char *value, int *i)
  * @param last_status The last state returned by the system
  * @return The expanded text 
  */
-static char	*expand_variable(char *value, int *i, t_env *env, int last_status)
+char	*expand_variable(char *value, int *i, t_env *env, int last_status)
 {
 	char	*result;
 	char	*name;
@@ -67,7 +85,7 @@ static char	*expand_variable(char *value, int *i, t_env *env, int last_status)
  * @param i A pointer to an index
  * @return The extracted text
  */
-static char	*extract_double_quoted(char *value, int *i, t_env *env,
+char	*extract_double_quoted(char *value, int *i, t_env *env,
 			int last_status)
 {
 	char	*result;
@@ -102,7 +120,7 @@ static char	*extract_double_quoted(char *value, int *i, t_env *env,
  * @param i A pointer to an index
  * @return The extracted text
  */
-static char	*extract_plain_text(char *value, int *i)
+char	*extract_plain_text(char *value, int *i)
 {
 	char	*result;
 	int		start;
@@ -112,36 +130,5 @@ static char	*extract_plain_text(char *value, int *i)
 		&& value[*i] != '$')
 		(*i)++;
 	result = ft_substr(value, start, *i - start);
-	return (result);
-}
-
-/**
- * @brief Expands the content of token type WORD
- * 
- * @param value The content to expand
- * @param env The environment list
- * @param last_status The last state returned by the system
- * @return The token's content expanded
- */
-char	*expand_word(char *value, t_env *env, int last_status)
-{
-	int		i;
-	char	*result;
-	char	*fragment;
-
-	result = ft_strdup("");
-	i = 0;
-	while (value[i])
-	{
-		if (value[i] == '\'')
-			fragment = extract_single_quoted(value, &i);
-		else if (value[i] == '"')
-			fragment = extract_double_quoted(value, &i, env, last_status);
-		else if (value[i] == '$')
-			fragment = expand_variable(value, &i, env, last_status);
-		else
-			fragment = extract_plain_text(value, &i);
-		result = ft_strjoin_free(result, fragment);
-	}
 	return (result);
 }

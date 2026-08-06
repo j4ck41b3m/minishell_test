@@ -6,7 +6,7 @@ INCLUDES = -I includes -I $(LIBFT_DIR)
 SRC_DIR = src
 OBJ_DIR = obj
 
-LIBS = -lreadline
+LIBS = -lreadline -lncurses
 
 NAME = minishell
 
