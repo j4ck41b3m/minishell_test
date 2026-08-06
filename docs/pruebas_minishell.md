@@ -35,7 +35,7 @@ echo '$'"HOME"
 
 ## Export
 
-<div align=center>     <font color=green> Pendientes ✓</font>     </div>
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
 
 ```bash
 export a=b
@@ -231,8 +231,8 @@ exit 2147483647
 exit -2147483648
 exit 9223372036854775807
 exit -9223372036854775808
-exit 9223372036854775808
-exit -9223372036854775809
+exit 9223372036854775808        => debe dar error de argumento numérico requerido
+exit -9223372036854775809       => debe dar error de argumento numérico requerido
 exit +100
 exit ++100
 exit +++100

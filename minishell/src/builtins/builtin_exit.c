@@ -19,16 +19,20 @@ static int	check_exit_args(t_shell *msh)
 {
 	int	i;
 
-	if (msh->cmd->argc > 2)
-		return (1);
 	if (msh->cmd->arg[1])
 	{
-		i = -1;
-		while (msh->cmd->arg[1][++i])
+		i = 0;
+		if (msh->cmd->arg[1][i] == '-' || msh->cmd->arg[1][i] == '+'
+			|| ft_isdigit(msh->cmd->arg[1][i]))
+			i++;
+		while (msh->cmd->arg[1][i])
 		{
 			if (!ft_isdigit(msh->cmd->arg[1][i]))
-				return (2);
+			return (2);
+			i++;
 		}
+		if (msh->cmd->argc > 2)
+			return (1);
 		return (ft_atoi(msh->cmd->arg[1]));
 	}
 	return (0);
