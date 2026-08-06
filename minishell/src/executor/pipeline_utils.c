@@ -5,8 +5,6 @@ void	handle_status(t_shell *msh)
 {
 	if (WIFEXITED(msh->last_status))
 		msh->last_status = WEXITSTATUS(msh->last_status);
-	if (msh && msh->last_status == 127)
-		printf("%s: %s\n", msh->cmd->arg[0], "command not found");
 	if (g_signal == S_SIGINT_CMD)
 		msh->last_status = 130;
 	printf("Status is %d\n", msh->last_status);
