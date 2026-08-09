@@ -94,12 +94,28 @@ void	fill_redirs(t_cmd *mycmd)
 	myred = mycmd->redirs;
 	while (myred)
 	{
-		myred->redir_in = STDIN_FILENO;
-		myred->redir_out = STDOUT_FILENO;
-		if (myred->type == INPUT || myred->type == TRUNC
-			|| myred->type == APPEND || myred->type == HEREDOC)
-			redirect(myred);
+		redirect(myred);
 		myred = myred->next;
 	}
 }
 
+void	apply_redirs(t_cmd *cmd)
+{
+	t_redir	*redir;
+
+	redir = cmd->redirs;
+	while (redir)
+	{
+		if (redir->redir_in != -1 && redir->redir_in != STDIN_FILENO)
+		{
+			dup2(redir->redir_in, STDIN_FILENO);
+			close(redir->redir_in);
+		}
+		if (redir->redir_out != -1 && redir->redir_out != STDOUT_FILENO)
+		{
+			dup2(redir->redir_out, STDOUT_FILENO);
+			close(redir->redir_out);
+		}
+		redir = redir->next;
+	}
+}

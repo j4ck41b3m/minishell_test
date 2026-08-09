@@ -11,4 +11,6 @@ char	**env_to_array(t_shell *msh);
 void	fill_redirs(t_cmd *mycmd);
 void	handle_status(t_shell *msh);
 void	connect_pipes(t_cmd **myred);
+void	apply_redirs(t_cmd *cmd);
+void	execve_cmd(t_shell *shell, t_cmd *cmd);
 #endif

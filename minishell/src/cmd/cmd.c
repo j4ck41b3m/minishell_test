@@ -38,6 +38,8 @@ t_redir	*new_redir(t_token_type type)
 	redir->quoted = false;
 	redir->target = NULL;
 	redir->next = NULL;
+	redir->redir_in = STDIN_FILENO;
+	redir->redir_out = STDOUT_FILENO;
 	return (redir);
 }
 
