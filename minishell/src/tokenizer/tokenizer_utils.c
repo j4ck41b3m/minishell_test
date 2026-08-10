@@ -1,5 +1,5 @@
-#include "minishell.h"
 #include "libft.h"
+#include "minishell.h"
 
 /**
  * @brief Creates a new token object
@@ -8,7 +8,7 @@
  * @param token_type The type of the new token
  * @return A pointer to the newly created token, or NULL if allocation fails
  */
-static t_token	*new_token(char *value, t_token_type token_type)
+static t_token	*new_token(char *value, t_token_type token_type, int quoted)
 {
 	t_token	*token;
 
@@ -16,6 +16,7 @@ static t_token	*new_token(char *value, t_token_type token_type)
 	if (!token)
 		return (NULL);
 	token->value = value;
+	token->quoted = quoted;
 	token->type = token_type;
 	token->next = NULL;
 	return (token);
@@ -95,13 +96,20 @@ static t_token	*create_op(int type_op, t_token_type type, const char *value)
 			return (NULL);
 		ft_strlcpy(token_value, value, 2);
 	}
-	token = new_token(token_value, type);
+	token = new_token(token_value, type, 0);
 	if (!token)
 	{
 		free(token_value);
 		return (NULL);
 	}
 	return (token);
+}
+
+int	in_quoted(char *value)
+{
+	if (ft_strchr(value, '\'') || ft_strchr(value, '"'))
+		return (1);
+	return (0);
 }
 
 /**
@@ -116,6 +124,7 @@ void	create_and_add_token(t_token **list, const char *value,
 {
 	t_token	*token;
 	char	*token_value;
+	int		quoted;
 
 	token = NULL;
 	token_value = NULL;
@@ -126,7 +135,8 @@ void	create_and_add_token(t_token **list, const char *value,
 	else if (type == WORD)
 	{
 		token_value = ft_strdup(value);
-		token = new_token(token_value, WORD);
+		quoted = in_quoted(token_value);
+		token = new_token(token_value, WORD, quoted);
 	}
 	if (!token)
 	{

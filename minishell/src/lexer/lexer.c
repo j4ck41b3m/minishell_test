@@ -36,7 +36,7 @@ t_status	lexer_validate(t_token *tokens)
 			write(2, "minishell: lexical error: invalid token\n", 40);
 			return (FAILURE);
 		}
-		if (contains_invalid_char(tokens->value))
+		if (contains_invalid_char(tokens->value) && !tokens->quoted)
 		{
 			write(2, "minishell: lexical error: invalid character\n", 44);
 			return (FAILURE);
