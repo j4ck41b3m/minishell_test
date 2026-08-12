@@ -32,7 +32,12 @@ void	heredoc_loop(char *limit, int fd)
 		line = readline("\033[1;34m> \033[0m");
 		if (!line || (!ft_strncmp(limit, line, ft_strlen(limit))
 				&& !ft_strncmp(limit, line, ft_strlen(line))))
+		{
+			if (line)
+				free_mem(line);
+			close(fd);
 			exit(EXIT_SUCCESS);
+		}
 		ft_putstr_fd(line, fd);
 		ft_putchar_fd('\n', fd);
 		free_mem(line);

@@ -20,7 +20,7 @@ int	main(int ac, char **av, char **envp)
 		prompt = env_get(shell.env, "PS1");
 		shell.line = readline(prompt);
 		free(prompt);
-		while (shell.line)
+		while (shell.line && shell.running)
 		{
 			if (parse(shell.line, &shell))
 			{
@@ -29,6 +29,12 @@ int	main(int ac, char **av, char **envp)
 					executor(&shell);
 				free_cmd(&shell.cmd);
 				g_signal = S_BASE;
+				if (!shell.running)
+				{
+					free(shell.line);
+					shell.line = NULL;
+					break;
+				}
 			}
 			free(shell.line);
 			prompt = env_get(shell.env, "PS1");

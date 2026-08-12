@@ -71,3 +71,22 @@ void	free_mem_all(char **ptr)
 	free(ptr);
 	ptr = NULL;
 }
+
+char	*read_line(char *msg)
+{
+	char	*tmp;
+	char	*line;
+	int		len;
+
+	ft_putstr_fd(msg, 1);
+	tmp = get_next_line(0);
+	if (!tmp)
+		return (NULL);
+	len = ft_strlen(tmp);
+	if (len > 0)
+		line = ft_substr(tmp, 0, len - 1);
+	else
+		line = ft_strdup(tmp);
+	free(tmp);
+	return(line);
+}
