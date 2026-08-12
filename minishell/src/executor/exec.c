@@ -49,12 +49,12 @@ void	execute_single(t_shell *shell)
 
 void	child_exec(t_shell *shell, t_cmd *cmd, int prev_fd, int pipefd[2])
 {
+	fill_redirs(cmd);
+	apply_redirs(cmd);
 	if (prev_fd != -1)
 		dup2(prev_fd, STDIN_FILENO);
 	if (cmd->next)
 		dup2(pipefd[1], STDOUT_FILENO);
-	fill_redirs(cmd);
-	apply_redirs(cmd);
 	if (prev_fd != -1)
 		close(prev_fd);
 	if (cmd->next)
