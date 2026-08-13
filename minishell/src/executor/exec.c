@@ -35,11 +35,20 @@ t_status	prepare_redirections(t_shell *shell)
 
 void	execute_single(t_shell *shell)
 {
+	int	ant_stdin;
+	int	ant_stdout;
+
 	if (shell->cmd->is_builtin)
 	{
 		fill_redirs(shell->cmd);
+		ant_stdin = dup(STDIN_FILENO);
+		ant_stdout = dup(STDOUT_FILENO);
 		apply_redirs(shell->cmd);
 		exec_builtin(shell);
+		dup2(ant_stdin, STDIN_FILENO);
+		dup2(ant_stdout, STDOUT_FILENO);
+		close(ant_stdin);
+		close(ant_stdout);
 		return ;
 	}
 	else
