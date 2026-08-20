@@ -90,3 +90,24 @@ char	*read_line(char *msg)
 	free(tmp);
 	return(line);
 }
+
+char	*fuseargs(char **args, int count)
+{
+	int		i;
+	char	*str;
+	char	*spc;
+
+	i = 1;
+	str = NULL;
+	spc = malloc(sizeof(char));
+	*spc = ' ';
+	while (i < count)
+	{
+		str = ft_strjoin(str, args[i]);
+		if ((i + 1) < count)
+			str = ft_strjoin(str, spc);
+		i++;
+	}
+	free(spc);
+	return (str);
+}

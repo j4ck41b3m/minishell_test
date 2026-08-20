@@ -6,5 +6,6 @@ char	*ft_strjoin_free(char *s1, char *s2);
 void	free_mem(void *ptr);
 void	free_mem_all(char **ptr);
 char	*read_line(char *msg);
+char	*fuseargs(char **args, int count);
 
 #endif
