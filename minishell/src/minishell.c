@@ -19,7 +19,6 @@ int	inter_mini(t_shell shell)
 	{
 		if (parse(shell.line, &shell))
 		{
-			printf("THE LINE IS: %s\n", shell.line);
 			add_history(shell.line);
 			if (g_signal != S_SIGINT_CMD)
 				executor(&shell);
@@ -43,16 +42,21 @@ int	inter_mini(t_shell shell)
 	return (1);
 }
 
-int	non_intermini(t_shell shell, char **args, int count)
+int	non_intermini(t_shell shell)
 {
-	shell.line = fuseargs(args, count);
-	if (parse(shell.line, &shell))
+	shell.line = read_line();
+	while (shell.line && shell.running)
 	{
-		add_history(shell.line);
-		if (g_signal != S_SIGINT_CMD)
-			executor(&shell);
-		free_cmd(&shell.cmd);
-		g_signal = S_BASE;
+		if (parse(shell.line, &shell))
+		{
+			add_history(shell.line);
+			if (g_signal != S_SIGINT_CMD)
+				executor(&shell);
+			free_cmd(&shell.cmd);
+			g_signal = S_BASE;
+		}
+		free(shell.line);
+		shell.line = read_line();
 	}
 	end_shell(&shell);
 	return (0);
@@ -64,9 +68,11 @@ int	main(int ac, char **av, char **envp)
 {
 	t_shell	shell;
 
-	init_shell(&shell, envp, av);
 	if (ac > 1)
-		return (non_intermini(shell, av, ac));
+		return (1);
+	init_shell(&shell, envp, av);
+	if (isatty(STDIN_FILENO) == 0)
+		return (non_intermini(shell));
 	else
 		return (inter_mini(shell));
 }

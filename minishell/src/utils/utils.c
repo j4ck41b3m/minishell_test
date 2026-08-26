@@ -72,42 +72,19 @@ void	free_mem_all(char **ptr)
 	ptr = NULL;
 }
 
-char	*read_line(char *msg)
+char	*read_line(void)
 {
 	char	*tmp;
-	char	*line;
 	int		len;
 
-	ft_putstr_fd(msg, 1);
 	tmp = get_next_line(0);
 	if (!tmp)
 		return (NULL);
 	len = ft_strlen(tmp);
 	if (len > 0)
-		line = ft_substr(tmp, 0, len - 1);
-	else
-		line = ft_strdup(tmp);
-	free(tmp);
-	return(line);
-}
-
-char	*fuseargs(char **args, int count)
-{
-	int		i;
-	char	*str;
-	char	*spc;
-
-	i = 1;
-	str = NULL;
-	spc = malloc(sizeof(char));
-	*spc = ' ';
-	while (i < count)
 	{
-		str = ft_strjoin(str, args[i]);
-		if ((i + 1) < count)
-			str = ft_strjoin(str, spc);
-		i++;
+		if (tmp[len - 1] == '\n')
+			tmp[len -1] = '\0';
 	}
-	free(spc);
-	return (str);
+	return (tmp);
 }

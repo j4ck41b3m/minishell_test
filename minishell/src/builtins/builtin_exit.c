@@ -48,7 +48,8 @@ void	builtin_exit(t_shell *msh)
 	char	*tmp;
 	char	*msg;
 
-	ft_putendl_fd("exit", 2);
+	if (isatty(STDIN_FILENO) == 1)
+		ft_putendl_fd("exit", 2);
 	msh->last_status = check_exit_args(msh);
 	if (msh->last_status == 1)
 		ft_putendl_fd("minishell: exit: too many arguments", 2);
