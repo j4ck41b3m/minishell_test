@@ -1,5 +1,6 @@
 #include "minishell.h"
 #include "libft.h"
+#include "builtins_utils.h"
 
 /**
  * @brief Checks the arguments of the exit command
@@ -17,7 +18,8 @@
  */
 static int	check_exit_args(t_shell *msh)
 {
-	int	i;
+	int		i;
+	long	tmp;
 
 	if (msh->cmd->arg[1])
 	{
@@ -28,12 +30,16 @@ static int	check_exit_args(t_shell *msh)
 		while (msh->cmd->arg[1][i])
 		{
 			if (!ft_isdigit(msh->cmd->arg[1][i]))
-			return (2);
+				return (2);
 			i++;
 		}
 		if (msh->cmd->argc > 2)
 			return (1);
-		return (ft_atoi(msh->cmd->arg[1]));
+		tmp = ft_atol(msh->cmd->arg[1]);
+		printf("%ld\n",tmp);
+		if (tmp > LONG_MAX || tmp < LONG_MIN)
+			return (2);
+		return (tmp);
 	}
 	return (0);
 }
@@ -62,12 +68,12 @@ void	builtin_exit(t_shell *msh)
 		free(msg);
 		msh->running = 0;
 //		end_shell(msh);
-//		exit(msh->last_status);
+		exit(msh->last_status);
 	}
 	else
 	{
 		msh->running = 0;
-//		end_shell(msh);	
-//		exit(msh->last_status);
+//		end_shell(msh);		
+		exit(msh->last_status);
 	}
 }
