@@ -222,6 +222,8 @@ echo -ne "Hola\nMundo"
 
 ### 5. exit (casos límite)
 
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
+
 ```bash
 exit
 exit 0
@@ -247,19 +249,19 @@ exit 42hola
 
 ```bash
 ls archivo_que_no_existe
-echo $?
+echo $?                             => devuelve 512 en lugar de 2
 /bin/bash -c "exit 157"
-echo $?
+echo $?                             => devuelve 40192 en lugar de 157
 (exit 123)
-echo $?
+echo $?                             => devuelve 32512 en lugar de 127
 false
-echo $?
+echo $?                             => devuelve 256 en lugar de 1
 true
 echo $?
 echo "El valor es $?"
 echo $? $? $?
-echo $(echo $?)
-echo $((5 + $?))
+echo $(echo $?)                     => devuelve echo 0) en lugar de $(echo 0)
+echo $((5 + $?))                    => devuelve (5 + 0)) en lugar de $((5 + 0))
 ```
 
 ### 7. Señales (pruebas más exhaustivas)

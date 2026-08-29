@@ -65,11 +65,8 @@ void	execve_cmd(t_shell *shell, t_cmd *cmd)
 
 void	exec_cmd(t_shell *msh)
 {
-//	char	*cmd_path;
-//	char	**envp;
-//	int		owns_cmd_path;
-//	char	*msg_error;
 	pid_t	pid;
+	int	status;
 
 	pid = fork();
 	if (pid == 0)
@@ -79,30 +76,11 @@ void	exec_cmd(t_shell *msh)
 		apply_redirs(msh->cmd);
 		execve_cmd(msh, msh->cmd);
 	}
-	waitpid(pid, &msh->last_status, 0);
-	/*	
-	while (msh->cmd->redirs)
-	{
-		if (msh->cmd->redirs->redir_in != 0)
-			dup2(msh->cmd->redirs->redir_in, STDIN_FILENO);
-		if (msh->cmd->redirs->redir_out != 1)
-			dup2(msh->cmd->redirs->redir_out, STDOUT_FILENO);
-		msh->cmd->redirs = msh->cmd->redirs->next;
-	}
-	owns_cmd_path = 1;
-	if (execve(cmd_path, msh->cmd->arg, envp) == -1)
-	{
-		msg_error = strerror(errno);
-		ft_putstr_fd(msh->name, 2);
-		ft_putstr_fd(": ", 2);
-		ft_putstr_fd(msg_error, 2);
-		ft_putstr_fd(": ", 2);
-		ft_putendl_fd(msh->cmd->arg[0], 2);
-		exit(127);
-	}
-	free_mem_all(envp);
-	if (owns_cmd_path)
-		free_mem(cmd_path);
-	exit(127);
-*/
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status))
+		msh->last_status = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+		msh->last_status = 128 + WTERMSIG(status);
+	else
+		msh->last_status = 1;
 }

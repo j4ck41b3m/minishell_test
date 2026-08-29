@@ -19,7 +19,6 @@ int	inter_mini(t_shell shell)
 	{
 		if (parse(shell.line, &shell))
 		{
-			add_history(shell.line);
 			if (g_signal != S_SIGINT_CMD)
 				executor(&shell);
 			free_cmd(&shell.cmd);
@@ -31,15 +30,14 @@ int	inter_mini(t_shell shell)
 				break ;
 			}
 		}
+		add_history(shell.line);
 		free(shell.line);
 		prompt = env_get(shell.env, "PS1");
 		shell.line = readline(prompt);
 		free(prompt);
 	}
 	end_shell(&shell);
-	return (0);
-	printf("Error!\n");
-	return (1);
+	return (shell.last_status);
 }
 
 int	non_intermini(t_shell shell)
@@ -59,9 +57,7 @@ int	non_intermini(t_shell shell)
 		shell.line = read_line();
 	}
 	end_shell(&shell);
-	return (0);
-	printf("Error!\n");
-	return (1);
+	return (shell.last_status);
 }
 
 int	main(int ac, char **av, char **envp)

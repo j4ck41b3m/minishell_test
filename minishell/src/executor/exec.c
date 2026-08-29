@@ -26,10 +26,6 @@ t_status	prepare_redirections(t_shell *shell)
 		fill_redirs(mycmd);
 		mycmd = mycmd->next;
 	}
-/*	if (shell->cmd->next)
-	{
-		connect_pipes(&shell->cmd);
-	}*/
 	return (SUCCESS);
 }
 
@@ -82,6 +78,7 @@ void	execute_pipeline(t_shell *shell)
 {
 	int	prev_fd;
 	int	pipefd[2];
+	int	status;
 	pid_t	pid;
 	pid_t	last_pid;
 	t_cmd	*cmd;
@@ -128,25 +125,13 @@ void	execute_pipeline(t_shell *shell)
 		cmd = cmd->next;
 //		shell->cmd = cmd;
 	}
-	waitpid(last_pid, &shell->last_status, 0);
-			/* if (ft_isascii(shell->cmd->arg[0][0]) == 0)
-		{
-			shell->last_status = 1;
-			break ;
-		} 
-		if (shell->cmd->is_builtin)
-			exec_builtin(shell);
-		else
-		{
-			g_signal = S_CMD;
-			pid = fork();
-			if (pid == 0)
-				execute_single(shell);
-			else
-				waitpid(pid, &shell->last_status, 0);
-			handle_status(shell);
-		}
-		next_cmd(shell);*/
+	waitpid(last_pid, &status, 0);
+	if (WIFEXITED(status))
+		shell->last_status = WEXITSTATUS(status);
+	else if (WIFSIGNALED(status))
+		shell->last_status = 128 + WTERMSIG(status);
+	else
+		shell->last_status = 1;
 }
 
 void	executor(t_shell *shell)
