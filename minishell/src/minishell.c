@@ -1,7 +1,7 @@
 #include "minishell.h"
 #include "libft.h"
 
-static void	clearScreen(t_shell *shell)
+static void	clean_screen(t_shell *shell)
 {
 	printf("\033[3J\033[2J\033[H");
 	printf("Welcome to %s!\n", shell->name + 2);
@@ -11,7 +11,7 @@ int	inter_mini(t_shell shell)
 {
 	char	*prompt;
 
-	clearScreen(&shell);
+	clean_screen(&shell);
 	prompt = env_get(shell.env, "PS1");
 	shell.line = readline(prompt);
 	free(prompt);
