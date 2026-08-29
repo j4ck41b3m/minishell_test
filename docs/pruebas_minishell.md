@@ -247,21 +247,23 @@ exit 42hola
 
 ### 6. Valor de retorno (casos avanzados)
 
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
+
 ```bash
 ls archivo_que_no_existe
-echo $?                             => devuelve 512 en lugar de 2
+echo $?
 /bin/bash -c "exit 157"
-echo $?                             => devuelve 40192 en lugar de 157
+echo $?
 (exit 123)
-echo $?                             => devuelve 32512 en lugar de 127
+echo $?
 false
-echo $?                             => devuelve 256 en lugar de 1
+echo $?
 true
 echo $?
 echo "El valor es $?"
 echo $? $? $?
-echo $(echo $?)                     => devuelve echo 0) en lugar de $(echo 0)
-echo $((5 + $?))                    => devuelve (5 + 0)) en lugar de $((5 + 0))
+echo $(echo $?)
+echo $((5 + $?))
 ```
 
 ### 7. Señales (pruebas más exhaustivas)

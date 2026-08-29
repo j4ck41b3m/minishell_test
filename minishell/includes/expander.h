@@ -10,5 +10,7 @@ char	*expand_tilde(int *i, t_env *env);
 char	*expand_variable(char *value, int *i, t_env *env, int last_status);
 char	*extract_plain_text(char *value, int *i);
 void	expand_tokens(t_token **list, t_env *env, int last_status);
+int		find_group_end(char *value, int start);
+char	*expand_group(char *value, int *i, t_env *env, int last_status);
 
 #endif
