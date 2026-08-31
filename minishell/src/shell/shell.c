@@ -45,7 +45,10 @@ static void	update_env_var(t_env *env, char *key, char *new_value)
 	if (value == NULL)
 		env_set(&env, key, new_value);
 	else
+	{
 		free(value);
+		value = NULL;
+	}
 }
 
 /**
@@ -63,7 +66,7 @@ static void	basic_env_vars(t_shell *shell)
 	update_env_var(shell->env, "MAIL", "bconejo-@student.42malaga.com");
 	update_env_var(shell->env, "_", "/usr/bin/env");
 	update_env_var(shell->env, "PS1",
-		"\033[38;5;229mminishell \033[0m% \033[37m");
+		"\001\033[38;5;229m\002minishell \001\033[0m\002% \001\033[37m\002");
 	update_shellevel(shell);
 	free(pwd);
 	return ;
@@ -96,7 +99,18 @@ void	init_shell(t_shell *shell, char **envp, char **av)
  */
 void	end_shell(t_shell *shell)
 {
-	free(shell->line);
+	char    *tmp;
+	if (!isatty(STDIN_FILENO))
+	{
+		free(shell->line);
+		while (1)
+		{
+			tmp = get_next_line(0);
+			if (!tmp)
+			break;
+			free(tmp);
+		}
+	}
 	free_env(&shell->env);
 	free_cmd(&shell->cmd);
 	rl_clear_history();

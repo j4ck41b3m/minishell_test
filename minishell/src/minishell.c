@@ -7,14 +7,46 @@ static void	clean_screen(t_shell *shell)
 	printf("Welcome to %s!\n", shell->name + 2);
 }
 
-int	inter_mini(t_shell shell)
+char	*get_prompt(t_shell *shell)
 {
 	char	*prompt;
-
-	clean_screen(&shell);
-	prompt = env_get(shell.env, "PS1");
-	shell.line = readline(prompt);
+	char	*line;
+	
+	prompt = env_get(shell->env, "PS1");
+	line = readline(prompt);
 	free(prompt);
+	return (line);
+}
+
+int	inter_mini(t_shell shell)
+{
+	clean_screen(&shell);
+	while (shell.running)
+	{
+		shell.line = get_prompt(&shell);
+		if (parse(shell.line, &shell))
+		{
+			if (g_signal != S_SIGINT_CMD)
+				executor(&shell);
+			free_cmd(&shell.cmd);
+			g_signal = S_BASE;
+/*			if (!shell.running)
+			{
+				free(shell.line);
+				shell.line = NULL;
+				break ;
+			}
+*/		}
+		add_history(shell.line);
+		free(shell.line);
+	}
+	end_shell(&shell);
+	return (shell.last_status);
+}
+
+int	non_intermini(t_shell shell)
+{
+	shell.line = read_line();
 	while (shell.line && shell.running)
 	{
 		if (parse(shell.line, &shell))
@@ -30,31 +62,9 @@ int	inter_mini(t_shell shell)
 				break ;
 			}
 		}
-		add_history(shell.line);
 		free(shell.line);
-		prompt = env_get(shell.env, "PS1");
-		shell.line = readline(prompt);
-		free(prompt);
-	}
-	end_shell(&shell);
-	return (shell.last_status);
-}
-
-int	non_intermini(t_shell shell)
-{
-	shell.line = read_line();
-	while (shell.line && shell.running)
-	{
-		if (parse(shell.line, &shell))
-		{
-			add_history(shell.line);
-			if (g_signal != S_SIGINT_CMD)
-				executor(&shell);
-			free_cmd(&shell.cmd);
-			g_signal = S_BASE;
-		}
-		free(shell.line);
-		shell.line = read_line();
+		if (shell.running)
+			shell.line = read_line();
 	}
 	end_shell(&shell);
 	return (shell.last_status);

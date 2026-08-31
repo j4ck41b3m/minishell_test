@@ -74,17 +74,17 @@ void	free_mem_all(char **ptr)
 
 char	*read_line(void)
 {
-	char	*tmp;
+	char	*line;
 	int		len;
 
-	tmp = get_next_line(0);
-	if (!tmp)
+	line = get_next_line(0);
+	if (!line)
 		return (NULL);
-	len = ft_strlen(tmp);
+	len = ft_strlen(line);
 	if (len > 0)
 	{
-		if (tmp[len - 1] == '\n')
-			tmp[len -1] = '\0';
+		if (line[len - 1] == '\n')
+			line[len -1] = '\0';
 	}
-	return (tmp);
+	return (line);
 }
