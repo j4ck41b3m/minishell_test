@@ -1,28 +1,6 @@
 #include "minishell.h"
 #include "libft.h"
 
-void	connect_pipes(t_cmd **myred)
-{
-	t_cmd	*current;
-	int		fd[2];
-
-	current = *myred;
-	while (current->next)
-	{
-		pipe(fd);
-		while (current->redirs)
-		{
-			if (current->redirs->next)
-				current->redirs = current->redirs->next;
-			else
-				current->redirs->redir_out = fd[1];
-		}
-		if (current->next && current->next->redirs)
-			current->next->redirs->redir_in = fd[0];
-		current = current->next;
-	}
-}
-
 void	heredoc_loop(char *limit, int fd)
 {
 	char	*line;
@@ -70,8 +48,7 @@ void	redirect(t_redir *tmp)
 
 	if (tmp->type == INPUT)
 	{
-		fd = open(tmp->target, O_RDONLY);
-		tmp->redir_in = fd;
+		input_asignment(tmp);
 	}
 	else if (tmp->type == TRUNC)
 	{
