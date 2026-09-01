@@ -2,10 +2,11 @@
 #include "minishell.h"
 
 /**
- * @brief Updates environment variable SHLVL
- * 
- * @param shell The global status of minishell
- */
+* @brief Updates environment variable SHLVL
+*
+* @param shell The global status of minishell
+*/
+
 static void	update_shellevel(t_shell *shell)
 {
 	char	*shlvl;
@@ -31,12 +32,13 @@ static void	update_shellevel(t_shell *shell)
 }
 
 /**
- * @brief Updates a environment variable
- * 
- * @param env The environment list
- * @param key The key to update
- * @param new_value The new value to update
- */
+* @brief Updates a environment variable
+*
+* @param env The environment list
+* @param key The key to update
+* @param new_value The new value to update
+*/
+
 static void	update_env_var(t_env *env, char *key, char *new_value)
 {
 	char	*value;
@@ -52,10 +54,11 @@ static void	update_env_var(t_env *env, char *key, char *new_value)
 }
 
 /**
- * @brief Sets the basic environment variables
- * 
- * @param shell The global status of minishell
- */
+* @brief Sets the basic environment variables
+*
+* @param shell The global status of minishell
+*/
+
 static void	basic_env_vars(t_shell *shell)
 {
 	char	*pwd;
@@ -73,11 +76,12 @@ static void	basic_env_vars(t_shell *shell)
 }
 
 /**
- * @brief Initializes a shell struct
- *
- * @param shell The global status of minishell
- * @param envp The system environment variables
-  */
+* @brief Initializes a shell struct
+*
+* @param shell The global status of minishell
+* @param envp The system environment variables
+*/
+
 void	init_shell(t_shell *shell, char **envp, char **av)
 {
 	shell->env = NULL;
@@ -93,21 +97,27 @@ void	init_shell(t_shell *shell, char **envp, char **av)
 }
 
 /**
- * @brief Frees the memory space occupied by environment and command list
- *
- * @param shell A pointer to the shell struct
- */
+* @brief Frees the memory space occupied by environment and command list
+*
+* @param shell A pointer to the shell struct
+*/
+
 void	end_shell(t_shell *shell)
 {
-	char    *tmp;
-	if (!isatty(STDIN_FILENO))
+	char	*tmp;
+
+	if (shell->line)
 	{
 		free(shell->line);
+		shell->line = NULL;
+	}
+	if (!isatty(STDIN_FILENO))
+	{
 		while (1)
 		{
 			tmp = get_next_line(0);
 			if (!tmp)
-			break;
+				break ;
 			free(tmp);
 		}
 	}

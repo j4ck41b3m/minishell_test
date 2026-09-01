@@ -23,7 +23,7 @@ t_status	prepare_redirections(t_shell *shell)
 	mycmd = shell->cmd;
 	while (mycmd)
 	{
-		fill_redirs(mycmd);
+		fill_redirs(shell, mycmd);
 		mycmd = mycmd->next;
 	}
 	return (SUCCESS);
@@ -36,7 +36,6 @@ void	execute_single(t_shell *shell)
 
 	if (shell->cmd->is_builtin)
 	{
-		fill_redirs(shell->cmd);
 		ant_stdin = dup(STDIN_FILENO);
 		ant_stdout = dup(STDOUT_FILENO);
 		apply_redirs(shell->cmd);
@@ -54,34 +53,34 @@ void	execute_single(t_shell *shell)
 
 void	child_exec(t_shell *shell, t_cmd *cmd, int prev_fd, int pipefd[2])
 {
-	fill_redirs(cmd);
-	apply_redirs(cmd);
 	if (prev_fd != -1)
+	{
 		dup2(prev_fd, STDIN_FILENO);
-	if (cmd->next)
-		dup2(pipefd[1], STDOUT_FILENO);
-	if (prev_fd != -1)
 		close(prev_fd);
+	}
 	if (cmd->next)
 	{
+		dup2(pipefd[1], STDOUT_FILENO);
 		close(pipefd[0]);
 		close(pipefd[1]);
 	}
+	apply_redirs(cmd);
 	if (cmd->is_builtin)
 		exec_builtin(shell);
 	else
 		execve_cmd(shell, cmd);
-	exit(shell->last_status);		
+	exit(shell->last_status);
 }
 
 void	execute_pipeline(t_shell *shell)
 {
-	int	prev_fd;
-	int	pipefd[2];
-	int	status;
+	int		prev_fd;
+	int		pipefd[2];
+	int		status;
 	pid_t	pid;
 	pid_t	last_pid;
 	t_cmd	*cmd;
+	t_redir	*redir;
 
 	prev_fd = -1;
 	last_pid = -1;
@@ -91,7 +90,7 @@ void	execute_pipeline(t_shell *shell)
 		if (!cmd->arg || !cmd->arg[0])
 		{
 			cmd = cmd->next;
-			continue;
+			continue ;
 		}
 		if (cmd->next)
 		{
@@ -123,7 +122,6 @@ void	execute_pipeline(t_shell *shell)
 			prev_fd = pipefd[0];
 		}
 		cmd = cmd->next;
-//		shell->cmd = cmd;
 	}
 	waitpid(last_pid, &status, 0);
 	if (WIFEXITED(status))
@@ -132,6 +130,15 @@ void	execute_pipeline(t_shell *shell)
 		shell->last_status = 128 + WTERMSIG(status);
 	else
 		shell->last_status = 1;
+	redir = shell->cmd->redirs;
+	while (redir)
+	{
+		if (redir->redir_in > 2)
+			close(redir->redir_in);
+		if (redir->redir_out > 2)
+			close(redir->redir_out);
+		redir = redir->next;
+	}
 }
 
 void	executor(t_shell *shell)
@@ -139,7 +146,7 @@ void	executor(t_shell *shell)
 	classify_cmd(&shell->cmd);
 	if (!shell->cmd)
 		return ;
-//	fill_redirs(shell->cmd);
+	prepare_redirections(shell);
 	if (!shell->cmd->next)
 		execute_single(shell);
 	else

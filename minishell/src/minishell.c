@@ -11,7 +11,7 @@ char	*get_prompt(t_shell *shell)
 {
 	char	*prompt;
 	char	*line;
-	
+
 	prompt = env_get(shell->env, "PS1");
 	line = readline(prompt);
 	free(prompt);
@@ -30,15 +30,10 @@ int	inter_mini(t_shell shell)
 				executor(&shell);
 			free_cmd(&shell.cmd);
 			g_signal = S_BASE;
-/*			if (!shell.running)
-			{
-				free(shell.line);
-				shell.line = NULL;
-				break ;
-			}
-*/		}
+		}
 		add_history(shell.line);
 		free(shell.line);
+		shell.line = NULL;
 	}
 	end_shell(&shell);
 	return (shell.last_status);

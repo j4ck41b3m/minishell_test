@@ -1,19 +1,25 @@
 #include "minishell.h"
 #include "libft.h"
 
-void	heredoc_loop(char *limit, int fd)
+void	heredoc_loop(t_shell *shell, char *limit, int fd)
 {
 	char	*line;
 
 	while (1)
 	{
-		line = readline("\033[1;34m> \033[0m");
-		if (!line || (!ft_strncmp(limit, line, ft_strlen(limit))
-				&& !ft_strncmp(limit, line, ft_strlen(line))))
+		line = readline("\033[1;34m\002> \033[0m\002");
+		if (g_signal == S_SIGINT_CMD || g_signal == S_CANCEL_EXEC)
 		{
-			if (line)
-				free_mem(line);
+			free_mem(line);
 			close(fd);
+			end_shell(shell);
+			exit(130);
+		}
+		if (!line || !ft_strcmp(line, limit))
+		{
+			free_mem(line);
+			close(fd);
+			end_shell(shell);
 			exit(EXIT_SUCCESS);
 		}
 		ft_putstr_fd(line, fd);
@@ -22,10 +28,11 @@ void	heredoc_loop(char *limit, int fd)
 	}
 }
 
-int	heredoc(char *limit)
+int	heredoc(t_shell *shell, char *limit)
 {
 	pid_t	pid;
 	int		fd[2];
+	int		status;
 
 	if (pipe(fd) < 0)
 		return (ft_putendl_fd("failed to open pipe", 2), 1);
@@ -34,15 +41,23 @@ int	heredoc(char *limit)
 		return (ft_putendl_fd("failed to open fork", 2), 1);
 	if (pid == 0)
 	{
+		signal(SIGINT, sigint_handler);
 		g_signal = S_HEREDOC;
 		close(fd[0]);
-		heredoc_loop(limit, fd[1]);
+		heredoc_loop(shell, limit, fd[1]);
 	}
 	g_signal = S_HEREDOC_END;
-	return (waitpid(-1, NULL, 0), close(fd[1]), fd[0]);
+	waitpid(pid, &status, 0);
+	close(fd[1]);
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+	{
+		g_signal = S_SIGINT_CMD;
+		return (-1);
+	}
+	return (fd[0]);
 }
 
-void	redirect(t_redir *tmp)
+void	redirect(t_shell *shell, t_redir *tmp)
 {
 	int	fd;
 
@@ -62,21 +77,21 @@ void	redirect(t_redir *tmp)
 	}
 	else if (tmp->type == HEREDOC)
 	{
-		fd = heredoc(tmp->target);
+		fd = heredoc(shell, tmp->target);
 		tmp->redir_in = fd;
 		if (g_signal != S_CANCEL_EXEC)
 			g_signal = S_BASE;
 	}
 }
 
-void	fill_redirs(t_cmd *mycmd)
+void	fill_redirs(t_shell *shell, t_cmd *mycmd)
 {
 	t_redir	*myred;
 
 	myred = mycmd->redirs;
 	while (myred)
 	{
-		redirect(myred);
+		redirect(shell, myred);
 		myred = myred->next;
 	}
 }

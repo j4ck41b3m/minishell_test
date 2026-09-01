@@ -62,17 +62,16 @@ void	execve_cmd(t_shell *shell, t_cmd *cmd)
 	exit(127);
 }
 
-
 void	exec_cmd(t_shell *msh)
 {
 	pid_t	pid;
-	int	status;
+	int		status;
+	t_redir	*redir;
 
 	pid = fork();
 	if (pid == 0)
 	{
 		g_signal = S_CMD;
-		fill_redirs(msh->cmd);
 		apply_redirs(msh->cmd);
 		execve_cmd(msh, msh->cmd);
 	}
@@ -83,4 +82,13 @@ void	exec_cmd(t_shell *msh)
 		msh->last_status = 128 + WTERMSIG(status);
 	else
 		msh->last_status = 1;
+	redir = msh->cmd->redirs;
+	while (redir)
+	{
+		if (redir->redir_in > 2)
+			close(redir->redir_in);
+		if (redir->redir_out > 2)
+			close(redir->redir_out);
+		redir = redir->next;
+	}
 }
