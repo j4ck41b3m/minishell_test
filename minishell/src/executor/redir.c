@@ -57,13 +57,13 @@ int	heredoc(t_shell *shell, char *limit)
 	return (fd[0]);
 }
 
-void	redirect(t_shell *shell, t_redir *tmp)
+int	redirect(t_shell *shell, t_redir *tmp)
 {
 	int	fd;
 
 	if (tmp->type == INPUT)
 	{
-		input_asignment(tmp);
+		return (input_asignment(tmp));
 	}
 	else if (tmp->type == TRUNC)
 	{
@@ -82,18 +82,25 @@ void	redirect(t_shell *shell, t_redir *tmp)
 		if (g_signal != S_CANCEL_EXEC)
 			g_signal = S_BASE;
 	}
+	return (1);
 }
 
-void	fill_redirs(t_shell *shell, t_cmd *mycmd)
+int	fill_redirs(t_shell *shell, t_cmd *mycmd)
 {
 	t_redir	*myred;
+	int		tmp;
+	int		ret;
 
+	ret = 1;
 	myred = mycmd->redirs;
 	while (myred)
 	{
-		redirect(shell, myred);
+		tmp = redirect(shell, myred);
+		if (!tmp)
+			ret = 0;
 		myred = myred->next;
 	}
+	return (ret);
 }
 
 void	apply_redirs(t_cmd *cmd)

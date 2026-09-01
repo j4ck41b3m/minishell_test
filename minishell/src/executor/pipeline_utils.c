@@ -67,7 +67,7 @@ char	**env_to_array(t_shell *msh)
 	return (ret);
 }
 
-void	input_asignment(t_redir *tmp)
+int	input_asignment(t_redir *tmp)
 {
 	int	fd;
 
@@ -76,8 +76,8 @@ void	input_asignment(t_redir *tmp)
 	{
 		ft_putstr_fd("minishell: no such file or directory: ", 2);
 		ft_putendl_fd(tmp->target, 2);
-		exit(127);
-		return ;
+		return (0);
 	}
 	tmp->redir_in = fd;
+	return (1);
 }

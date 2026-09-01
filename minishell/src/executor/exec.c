@@ -19,14 +19,22 @@ void	classify_cmd(t_cmd **cmd)
 t_status	prepare_redirections(t_shell *shell)
 {
 	t_cmd	*mycmd;
+	int		tmp;
+	int		ret;
 
 	mycmd = shell->cmd;
+	ret = 1;
 	while (mycmd)
 	{
-		fill_redirs(shell, mycmd);
+		tmp = fill_redirs(shell, mycmd);
+		if (!tmp)
+			ret = 0;
 		mycmd = mycmd->next;
 	}
-	return (SUCCESS);
+	if (ret)
+		return (SUCCESS);
+	else
+		return (FAILURE);
 }
 
 void	execute_single(t_shell *shell)
@@ -146,9 +154,11 @@ void	executor(t_shell *shell)
 	classify_cmd(&shell->cmd);
 	if (!shell->cmd)
 		return ;
-	prepare_redirections(shell);
-	if (!shell->cmd->next)
-		execute_single(shell);
-	else
-		execute_pipeline(shell);
+	if (prepare_redirections(shell) == SUCCESS)
+	{
+		if (!shell->cmd->next)
+			execute_single(shell);
+		else
+			execute_pipeline(shell);
+	}
 }
