@@ -72,6 +72,7 @@ void	exec_cmd(t_shell *msh)
 	if (pid == 0)
 	{
 		g_signal = S_CMD;
+		signal(SIGQUIT, SIG_DFL);
 		apply_redirs(msh->cmd);
 		execve_cmd(msh, msh->cmd);
 	}
@@ -79,7 +80,11 @@ void	exec_cmd(t_shell *msh)
 	if (WIFEXITED(status))
 		msh->last_status = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
+	{
 		msh->last_status = 128 + WTERMSIG(status);
+		if (WTERMSIG(status) == SIGQUIT)
+			printf("Quit (core dumped)\n");
+	}
 	else
 		msh->last_status = 1;
 	redir = msh->cmd->redirs;

@@ -1,7 +1,7 @@
-#include "minishell.h"
 #include "libft.h"
+#include "minishell.h"
 
-int	g_signal;
+int		g_signal;
 
 /**
  * @brief Initializes the shell's signal handling
@@ -49,9 +49,11 @@ void	sigint_handler(int sig)
 }
 
 /**
- * @brief Auxiliary function for the purpose of handling additional SIGINT cases.
+
+	* @brief Auxiliary function for the purpose of handling additional SIGINT cases.
  *
- * This function manages additional SIGINT cases not directly covered by the main
+
+	* This function manages additional SIGINT cases not directly covered by the main
  * handler. For examplem canceling a heredoc execution or stablishing the
  * S_SIGINT signal into base state or heredoc.
  */
@@ -64,4 +66,11 @@ void	sigint_handler_aux(void)
 	}
 	else if (g_signal == S_BASE || g_signal == S_HEREDOC)
 		g_signal = S_SIGINT;
+}
+
+void	heredoc_sigint_handler(int sig)
+{
+	(void)sig;
+	g_signal = S_SIGINT_CMD;
+	close(STDIN_FILENO);
 }

@@ -73,7 +73,7 @@ char	*expand_variable(char *value, int *i, t_env *env, int last_status)
 		return (result);
 	}
 	else
-		result = ft_strdup("");
+		return (ft_strdup("$"));
 	(*i)++;
 	return (result);
 }

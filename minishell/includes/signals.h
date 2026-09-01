@@ -23,5 +23,6 @@ typedef enum e_signal
 void	signal_init(void);
 void	sigint_handler(int sig);
 void	sigint_handler_aux(void);
+void	heredoc_sigint_handler(int sig);
 
 #endif

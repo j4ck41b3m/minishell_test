@@ -72,6 +72,7 @@ void	child_exec(t_shell *shell, t_cmd *cmd, int prev_fd, int pipefd[2])
 		close(pipefd[0]);
 		close(pipefd[1]);
 	}
+	signal(SIGQUIT, SIG_DFL);
 	apply_redirs(cmd);
 	if (cmd->is_builtin)
 		exec_builtin(shell);
@@ -135,17 +136,28 @@ void	execute_pipeline(t_shell *shell)
 	if (WIFEXITED(status))
 		shell->last_status = WEXITSTATUS(status);
 	else if (WIFSIGNALED(status))
+	{
 		shell->last_status = 128 + WTERMSIG(status);
+		if (WTERMSIG(status) == SIGQUIT)
+			printf("Quit (core dumped)\n");
+	}
 	else
 		shell->last_status = 1;
-	redir = shell->cmd->redirs;
-	while (redir)
+	while (waitpid(-1, NULL,0) > 0)
+		continue ;
+	cmd = shell->cmd;
+	while (cmd)
 	{
-		if (redir->redir_in > 2)
-			close(redir->redir_in);
-		if (redir->redir_out > 2)
-			close(redir->redir_out);
-		redir = redir->next;
+		redir = shell->cmd->redirs;
+		while (redir)
+		{
+			if (redir->redir_in > 2)
+				close(redir->redir_in);
+			if (redir->redir_out > 2)
+				close(redir->redir_out);
+			redir = redir->next;
+		}
+		cmd = cmd->next;
 	}
 }
 
@@ -156,6 +168,8 @@ void	executor(t_shell *shell)
 		return ;
 	if (prepare_redirections(shell) == SUCCESS)
 	{
+		if (g_signal == S_SIGINT_CMD)
+			return ;
 		if (!shell->cmd->next)
 			execute_single(shell);
 		else

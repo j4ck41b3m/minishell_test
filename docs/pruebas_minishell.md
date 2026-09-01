@@ -4,7 +4,6 @@
 
 <div align=center>     <font color=green> Completadas ✓</font></div>
 
-
 ```bash
 echo
 echo hola
@@ -118,6 +117,8 @@ exit lalal
 
 ## pipe
 
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
+
 ```bash
 ls | wc
 ls|wc
@@ -131,6 +132,8 @@ ls | wc |
 ```
 
 ## redirecciones
+
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
 
 ```bash
 </<</>/>>
@@ -156,6 +159,8 @@ echo hola | cat | cat | cat | cat | cat | cat | cat
 ```
 
 ## general
+
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
 
 ```bash
 enter en input -> vacio
@@ -268,6 +273,8 @@ echo $((5 + $?))
 
 ### 7. Señales (pruebas más exhaustivas)
 
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
+
 ```bash
 sleep 60                 (y luego Ctrl+C)
 cat                      (y luego Ctrl+C)
@@ -281,6 +288,8 @@ cat /dev/urandom         (y luego Ctrl+C)
 ```
 
 ### 8. Comillas dobles (casos complicados)
+
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
 
 ```bash
 echo "Hola \"escapado\" mundo"
@@ -302,6 +311,8 @@ echo "*"
 
 ### 9. Comillas simples (casos complicados)
 
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
+
 ```bash
 echo 'Hola \'escapado\' mundo'
 echo 'Usuario: $USER, Home: $HOME'
@@ -321,6 +332,8 @@ echo '*'
 ```
 
 ### 10. env (pruebas más específicas)
+
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
 
 ```bash
 env

@@ -7,7 +7,7 @@ static void	clean_screen(t_shell *shell)
 	printf("Welcome to %s!\n", shell->name + 2);
 }
 
-char	*get_prompt(t_shell *shell)
+static char	*get_prompt(t_shell *shell)
 {
 	char	*prompt;
 	char	*line;
@@ -31,7 +31,8 @@ int	inter_mini(t_shell shell)
 			free_cmd(&shell.cmd);
 			g_signal = S_BASE;
 		}
-		add_history(shell.line);
+		if (shell.line[0])
+			add_history(shell.line);
 		free(shell.line);
 		shell.line = NULL;
 	}

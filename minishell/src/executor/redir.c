@@ -33,6 +33,8 @@ int	heredoc(t_shell *shell, char *limit)
 	pid_t	pid;
 	int		fd[2];
 	int		status;
+	t_cmd	*tmp_cmd;
+	t_redir	*tmp_redir;
 
 	if (pipe(fd) < 0)
 		return (ft_putendl_fd("failed to open pipe", 2), 1);
@@ -41,17 +43,34 @@ int	heredoc(t_shell *shell, char *limit)
 		return (ft_putendl_fd("failed to open fork", 2), 1);
 	if (pid == 0)
 	{
-		signal(SIGINT, sigint_handler);
+		signal(SIGINT, heredoc_sigint_handler);
 		g_signal = S_HEREDOC;
 		close(fd[0]);
+		tmp_cmd = shell->cmd;
+                while (tmp_cmd)
+                {
+                        tmp_redir = tmp_cmd->redirs;
+                        while (tmp_redir)
+                        {
+                                if (tmp_redir->redir_in > 2)
+                                        close(tmp_redir->redir_in);
+                                if (tmp_redir->redir_out > 2)
+                                        close(tmp_redir->redir_out);
+                                tmp_redir = tmp_redir->next;
+                        }
+                        tmp_cmd = tmp_cmd->next;
+                }
 		heredoc_loop(shell, limit, fd[1]);
 	}
 	g_signal = S_HEREDOC_END;
 	waitpid(pid, &status, 0);
 	close(fd[1]);
-	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+	if ((WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+		|| (WIFEXITED(status) && WEXITSTATUS(status) == 130))
 	{
 		g_signal = S_SIGINT_CMD;
+		printf("\n");
+		close(fd[0]);
 		return (-1);
 	}
 	return (fd[0]);
@@ -79,8 +98,8 @@ int	redirect(t_shell *shell, t_redir *tmp)
 	{
 		fd = heredoc(shell, tmp->target);
 		tmp->redir_in = fd;
-		if (g_signal != S_CANCEL_EXEC)
-			g_signal = S_BASE;
+//		if (g_signal != S_CANCEL_EXEC)
+//			g_signal = S_BASE;
 	}
 	return (1);
 }
@@ -95,6 +114,8 @@ int	fill_redirs(t_shell *shell, t_cmd *mycmd)
 	myred = mycmd->redirs;
 	while (myred)
 	{
+		if (g_signal == S_SIGINT_CMD)
+			break ; 
 		tmp = redirect(shell, myred);
 		if (!tmp)
 			ret = 0;
