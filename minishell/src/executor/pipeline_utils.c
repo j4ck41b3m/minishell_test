@@ -81,3 +81,18 @@ int	input_asignment(t_redir *tmp)
 	tmp->redir_in = fd;
 	return (1);
 }
+
+void	classify_cmd(t_cmd **cmd)
+{
+	t_cmd	*aux;
+
+	aux = *cmd;
+	while (aux)
+	{
+		if (aux->argc == 0)
+			aux->is_builtin = 0;
+		else
+			aux->is_builtin = is_builtin(aux);
+		aux = aux->next;
+	}
+}

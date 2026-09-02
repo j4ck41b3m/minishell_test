@@ -1,21 +1,6 @@
 #include "minishell.h"
 #include "libft.h"
 
-void	classify_cmd(t_cmd **cmd)
-{
-	t_cmd	*aux;
-
-	aux = *cmd;
-	while (aux)
-	{
-		if (aux->argc == 0)
-			aux->is_builtin = 0;
-		else
-			aux->is_builtin = is_builtin(aux);
-		aux = aux->next;
-	}
-}
-
 t_status	prepare_redirections(t_shell *shell)
 {
 	t_cmd	*mycmd;
@@ -85,11 +70,9 @@ void	execute_pipeline(t_shell *shell)
 {
 	int		prev_fd;
 	int		pipefd[2];
-	int		status;
 	pid_t	pid;
 	pid_t	last_pid;
 	t_cmd	*cmd;
-	t_redir	*redir;
 
 	prev_fd = -1;
 	last_pid = -1;
@@ -101,64 +84,18 @@ void	execute_pipeline(t_shell *shell)
 			cmd = cmd->next;
 			continue ;
 		}
-		if (cmd->next)
-		{
-			if (pipe(pipefd) < 0)
-			{
-				perror("pipe");
-				shell->last_status = 1;
-				return ;
-			}
-		}
+		if (cmd->next && pipe(pipefd) < 0)
+			return (exit_pipecmd(shell, "lol"));
 		pid = fork();
 		if (pid < 0)
-		{
-			perror("fork");
-			shell->last_status = 1;
-			return ;
-		}
+			return (exit_pipecmd(shell, "fork"));
 		if (pid == 0)
-		{
-			g_signal = S_CMD;
-			child_exec(shell, cmd, prev_fd, pipefd);
-		}
+			exec_split(shell, cmd, prev_fd, pipefd);
 		last_pid = pid;
-		if (prev_fd != -1)
-			close(prev_fd);
-		if (cmd->next)
-		{
-			close(pipefd[1]);
-			prev_fd = pipefd[0];
-		}
+		exec_split_second(cmd, &prev_fd, pipefd);
 		cmd = cmd->next;
 	}
-	waitpid(last_pid, &status, 0);
-	if (WIFEXITED(status))
-		shell->last_status = WEXITSTATUS(status);
-	else if (WIFSIGNALED(status))
-	{
-		shell->last_status = 128 + WTERMSIG(status);
-		if (WTERMSIG(status) == SIGQUIT)
-			printf("Quit (core dumped)\n");
-	}
-	else
-		shell->last_status = 1;
-	while (waitpid(-1, NULL,0) > 0)
-		continue ;
-	cmd = shell->cmd;
-	while (cmd)
-	{
-		redir = shell->cmd->redirs;
-		while (redir)
-		{
-			if (redir->redir_in > 2)
-				close(redir->redir_in);
-			if (redir->redir_out > 2)
-				close(redir->redir_out);
-			redir = redir->next;
-		}
-		cmd = cmd->next;
-	}
+	exec_pipeline_cont(shell, last_pid);
 }
 
 void	executor(t_shell *shell)
