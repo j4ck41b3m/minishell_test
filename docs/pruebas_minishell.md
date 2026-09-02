@@ -160,8 +160,6 @@ echo hola | cat | cat | cat | cat | cat | cat | cat
 
 ## general
 
-<div align=center>     <font color=green> Completadas ✓</font>     </div>
-
 ```bash
 enter en input -> vacio
 solo espacios
@@ -172,7 +170,6 @@ unset $HOME -> cd
 ```
 
 # Test for minishell * Parte 2 *
-
 
 ### 1. Compilación (más detallado)
 
@@ -186,9 +183,11 @@ rm -f minishell && make
 
 ### 2. Comandos simples y variables globales (más complejos)
 
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
+
 ```bash
 /bin/ls
-/usr/bin/find / -name "*.h" -type f 2>/dev/null | /usr/bin/head -n 5
+/usr/bin/find / -name "*.h" -type f 2>/dev/null | /usr/bin/head -n 5     => no exigible en parte obligatoria
 /bin/cat /proc/sys/kernel/hostname
 /usr/bin/du -sh /etc
                      (varios espacios y tabs)
@@ -197,6 +196,8 @@ rm -f minishell && make
 ```
 
 ### 3. Argumentos (casos más complejos)
+
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
 
 ```bash
 /bin/ls -la --color=auto /etc /var
@@ -210,6 +211,8 @@ rm -f minishell && make
 ```
 
 ### 4. echo (casos especiales)
+
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
 
 ```bash
 echo
@@ -346,6 +349,8 @@ env -i
 ```
 
 ### 11. export (casos avanzados)
+
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
 
 ```bash
 export

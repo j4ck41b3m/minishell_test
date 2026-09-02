@@ -5,13 +5,14 @@ static t_status	check_arg(char *str)
 {
 	int	i;
 
-	i = 0;
-	while (str && str[i])
+	if (!str || str[0] != '-' || str[1] != 'n')
+		return (FAILURE);
+	i = 1;
+	while (str[i])
 	{
-		if (str && ft_strchr("-n", str[i]))
-			i++;
-		else
+		if (str[i] != 'n')
 			return (FAILURE);
+		i++;
 	}
 	return (SUCCESS);
 }
@@ -22,12 +23,6 @@ static void	print_word_and_space(char **str, int *i)
 	(*i)++;
 	if (str[*i])
 		ft_putchar_fd(32, 1);
-}
-
-static void	print_endl(t_shell *msh)
-{
-	if (!(msh->cmd->arg[1] && !ft_strncmp(msh->cmd->arg[1], "-n", 2)))
-		ft_putchar_fd(10, 1);
 }
 
 /**
@@ -41,25 +36,15 @@ void	builtin_echo(t_shell *msh)
 	int	test_arg;
 
 	i = 1;
-	test_arg = 1;
+	test_arg = 0;
 	msh->last_status = 0;
-	while (msh->cmd->arg[i])
+	while (msh->cmd->arg[i] && check_arg(msh->cmd->arg[i]))
 	{
-		if (!ft_strncmp(msh->cmd->arg[i], "-n", 2))
-		{
-			if (check_arg(msh->cmd->arg[i]) && test_arg)
-				i++;
-			else
-			{
-				test_arg = 0;
-				print_word_and_space(msh->cmd->arg, &i);
-			}
-		}
-		else
-		{
-			while (msh->cmd->arg[i])
-				print_word_and_space(msh->cmd->arg, &i);
-		}
+		test_arg = 1;
+		i++;
 	}
-	print_endl(msh);
+	while (msh->cmd->arg[i])
+		print_word_and_space(msh->cmd->arg, &i);
+	if (!test_arg)
+		ft_putchar_fd('\n', 1);
 }
