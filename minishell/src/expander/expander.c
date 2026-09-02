@@ -122,7 +122,7 @@ char	*expand_group(char *value, int *i, t_env *env, int last_status)
 	res = ft_strjoin("$(", expanded);
 	if (!res)
 		return (free(expanded), NULL);
-	res = ft_strjoin_free(res, ")");
+	res = ft_strjoin_free(res, ft_strdup(")"));
 	free(expanded);
 	*i = end + 1;
 	return (res);

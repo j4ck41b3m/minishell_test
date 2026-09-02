@@ -18,8 +18,12 @@ char	*get_cmd_path(char *cmd, t_env *env)
 	if (!env)
 		return (NULL);
 	tmp = env_get(env, "PATH");
+	if (!tmp)
+		return (NULL);
 	paths = ft_split(tmp, ':');
 	free_mem(tmp);
+	if (!paths)
+		return (NULL);
 	i = -1;
 	while (paths[++i])
 	{
@@ -50,8 +54,9 @@ void	execve_cmd(t_shell *shell, t_cmd *cmd)
 	cmd_path = get_cmd_path(cmd->arg[0], shell->env);
 	if (!cmd_path)
 	{
-		ft_putstr_fd("minishell: command not found: ", 2);
-		ft_putendl_fd(cmd->arg[0], 2);
+		ft_putstr_fd("minishell: ", 2);
+		ft_putstr_fd(cmd->arg[0], 2);
+		ft_putendl_fd(" : No such file or directory", 2);
 		exit(127);
 	}
 	envp = env_to_array(shell);

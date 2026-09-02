@@ -371,6 +371,8 @@ export -p
 
 ### 12. unset (más complejo)
 
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
+
 ```bash
 export TEMP1=uno TEMP2=dos TEMP3=tres
 env | grep TEMP
@@ -388,6 +390,8 @@ unset --help
 ```
 
 ### 13. cd (casos avanzados)
+
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
 
 ```bash
 pwd
@@ -421,6 +425,8 @@ pwd
 
 ### 14. pwd (casos complejos)
 
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
+
 ```bash
 pwd
 cd /tmp
@@ -442,6 +448,8 @@ pwd
 
 ### 15. Ruta relativa (más complicado)
 
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
+
 ```bash
 cd $HOME
 ./minishell
@@ -458,6 +466,8 @@ ls ./././
 ```
 
 ### 16. Path de entorno (casos especiales)
+
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
 
 ```bash
 echo $PATH
@@ -483,6 +493,8 @@ ejecutable.sh
 ```
 
 ### 17. Redirecciones (más complejos)
+
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
 
 ```bash
 ls > archivo1.txt
@@ -524,6 +536,8 @@ FIN
 
 ### 18. Pipes (casos complejos)
 
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
+
 ```bash
 ls | grep .txt
 cat /etc/passwd | grep root | wc -l
@@ -543,6 +557,8 @@ ls -la | cat | cat | cat | cat | cat | cat | cat | cat | cat | cat
 ```
 
 ### 19. Variables de entorno (casos avanzados)
+
+<div align=center>     <font color=green> Completadas ✓</font>     </div>
 
 ```bash
 echo $USER

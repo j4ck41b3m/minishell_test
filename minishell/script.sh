@@ -1,3 +1,0 @@
-ls
-echo hola
-ls
