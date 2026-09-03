@@ -2,11 +2,12 @@
 #include "libft.h"
 
 /**
- * @brief Opens a file for input redirection and validates its existence
- * 
- * @param tmp The redirection node containing the target file
- * @return 1 on success, 0 if the file cannot be opened
- */
+* @brief Opens a file for input redirection and validates its existence
+*
+* @param tmp The redirection node containing the target file
+* @return 1 on success, 0 if the file cannot be opened
+*/
+
 static int	input_asignment(t_redir *tmp)
 {
 	int	fd;
@@ -22,7 +23,6 @@ static int	input_asignment(t_redir *tmp)
 	return (1);
 }
 
-
 /**
 * @brief Opens the appropriate file descriptors based on the redirection type
 *
@@ -30,6 +30,7 @@ static int	input_asignment(t_redir *tmp)
 * @param tmp The current redirection node to process
 * @return 1 on success, 0 on failure
 */
+
 static int	redirect(t_shell *shell, t_redir *tmp)
 {
 	int	fd;
@@ -63,6 +64,7 @@ static int	redirect(t_shell *shell, t_redir *tmp)
 * @param mycmd The command node containing the redirections list
 * @return 1 if all redirections were successful, 0 otherwise
 */
+
 int	fill_redirs(t_shell *shell, t_cmd *mycmd)
 {
 	t_redir	*myred;
@@ -88,6 +90,7 @@ int	fill_redirs(t_shell *shell, t_cmd *mycmd)
 *
 * @param cmd The command node containing the valid file descriptors
 */
+
 void	apply_redirs(t_cmd *cmd)
 {
 	t_redir	*redir;
