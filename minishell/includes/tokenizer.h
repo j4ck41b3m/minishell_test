@@ -42,6 +42,7 @@ typedef struct s_token
 }					t_token;
 
 t_status			is_op(const char *input, int i);
+int					in_quoted(char *value);
 char				*read_word(const char *input, int *i);
 void				create_and_add_token(t_token **list, const char *value,
 						t_token_type type);

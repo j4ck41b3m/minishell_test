@@ -105,13 +105,6 @@ static t_token	*create_op(int type_op, t_token_type type, const char *value)
 	return (token);
 }
 
-int	in_quoted(char *value)
-{
-	if (ft_strchr(value, '\'') || ft_strchr(value, '"'))
-		return (1);
-	return (0);
-}
-
 /**
  * @brief Creates a new token and adds it to the token list
  *

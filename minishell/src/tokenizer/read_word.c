@@ -16,6 +16,19 @@ t_status	is_op(const char *input, int i)
 }
 
 /**
+ * @brief Checks if a string contains any single or double quotes
+ * 
+ * @param value The string to check
+ * @return int 1 if at least one quote is found, 0 otherwise
+ */
+int	in_quoted(char *value)
+{
+	if (ft_strchr(value, '\'') || ft_strchr(value, '"'))
+		return (1);
+	return (0);
+}
+
+/**
  * @brief Reads a quoted word and returns it as a token fragment
  *
  * @param input The input string
