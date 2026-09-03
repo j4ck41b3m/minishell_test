@@ -1,6 +1,12 @@
 #include "minishell.h"
 #include "libft.h"
 
+/**
+ * @brief Checks the arguments of the echo command
+ * 
+ * @param str The argument to check
+ * @return SUCCESS if it is valid, FAILURE otherwise
+ */
 static t_status	check_arg(char *str)
 {
 	int	i;
@@ -17,6 +23,12 @@ static t_status	check_arg(char *str)
 	return (SUCCESS);
 }
 
+/**
+ * @brief Prints a word and appends a space if not the last element
+ * 
+ * @param str The string to print
+ * @param i A pointer to a index
+ */
 static void	print_word_and_space(char **str, int *i)
 {
 	ft_putstr_fd(str[*i], 1);

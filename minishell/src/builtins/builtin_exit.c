@@ -1,6 +1,5 @@
 #include "minishell.h"
 #include "libft.h"
-#include "builtins_utils.h"
 
 /**
  * @brief Skips leading spaces/tabs and determines the sign and limits

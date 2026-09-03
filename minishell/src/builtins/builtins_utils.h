@@ -5,6 +5,5 @@
 
 void	export_no_args(t_shell *shell);
 void	export_with_args(t_shell *shell);
-long	ft_atol(const char *str);
 
 #endif
