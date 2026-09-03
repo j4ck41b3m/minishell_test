@@ -19,4 +19,6 @@ void	handle_status(t_shell *msh);
 void	apply_redirs(t_cmd *cmd);
 void	child_exec(t_shell *shell, t_cmd *cmd, int prev_fd, int pipefd[2]);
 void	execve_cmd(t_shell *shell, t_cmd *cmd);
+int		heredoc(t_shell *shell, char *limit);
+
 #endif

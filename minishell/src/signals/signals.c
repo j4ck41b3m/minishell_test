@@ -49,11 +49,9 @@ void	sigint_handler(int sig)
 }
 
 /**
-
-	* @brief Auxiliary function for the purpose of handling additional SIGINT cases.
+ * @brief Auxiliary function for the purpose of handling additional SIGINT cases.
  *
-
-	* This function manages additional SIGINT cases not directly covered by the main
+ * This function manages additional SIGINT cases not directly covered by the main
  * handler. For examplem canceling a heredoc execution or stablishing the
  * S_SIGINT signal into base state or heredoc.
  */
@@ -68,6 +66,11 @@ void	sigint_handler_aux(void)
 		g_signal = S_SIGINT;
 }
 
+/**
+ * @brief 
+ * 
+ * @param sig 
+ */
 void	heredoc_sigint_handler(int sig)
 {
 	(void)sig;

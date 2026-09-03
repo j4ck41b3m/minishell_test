@@ -47,10 +47,7 @@ void	execve_cmd(t_shell *shell, t_cmd *cmd)
 	char	**envp;
 
 	if (!cmd || !cmd->arg || !cmd->arg[0])
-	{
-		ft_putstr_fd("minishell: invalid command\n", 2);
-		exit(127);
-	}
+		exit(0);
 	cmd_path = get_cmd_path(cmd->arg[0], shell->env);
 	if (!cmd_path)
 	{

@@ -1,7 +1,14 @@
 #include "minishell.h"
 #include "libft.h"
 
-void	heredoc_loop(t_shell *shell, char *limit, int fd)
+/**
+* @brief Reads lines from standard input until the delimiter is found.
+*
+* @param shell The global status of minishell.
+* @param limit The delimiter string to stop the heredoc.
+* @param fd The file descriptor of the pipe to write the input to.
+*/
+static void	heredoc_loop(t_shell *shell, char *limit, int fd)
 {
 	char	*line;
 
@@ -28,13 +35,64 @@ void	heredoc_loop(t_shell *shell, char *limit, int fd)
 	}
 }
 
+/**
+* @brief Closes all redirections greater than 2 to prevent FD leaks in heredoc.
+*
+* @param shell The global status of minishell.
+*/
+static void	close_heredoc_fds(t_shell *shell)
+{
+	t_cmd	*tmp_cmd;
+	t_redir	*tmp_redir;
+
+	tmp_cmd = shell->cmd;
+	while (tmp_cmd)
+	{
+		tmp_redir = tmp_cmd->redirs;
+		while (tmp_redir)
+		{
+			if (tmp_redir->redir_in > 2)
+				close(tmp_redir->redir_in);
+			if (tmp_redir->redir_out > 2)
+				close(tmp_redir->redir_out);
+			tmp_redir = tmp_redir->next;
+		}
+		tmp_cmd = tmp_cmd->next;
+	}
+}
+
+/**
+* @brief Checks the exit status of the heredoc child process.
+*
+* @param status The waitpid status integer.
+* @param fd_zero The read end of the heredoc pipe.
+* @return The fd to read from, or -1 if execution was cancelled by signal.
+*/
+static int	check_heredoc_status(int status, int fd_zero)
+{
+	if ((WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+		|| (WIFEXITED(status) && WEXITSTATUS(status) == 130))
+	{
+		g_signal = S_SIGINT_CMD;
+		printf("\n");
+		close(fd_zero);
+		return (-1);
+	}
+	return (fd_zero);
+}
+
+/**
+* @brief Creates a pipe and forks a process to execute a heredoc.
+*
+* @param shell The global status of minishell.
+* @param limit The delimiter string to stop the heredoc.
+* @return The read end of the pipe, or -1 if it fails.
+*/
 int	heredoc(t_shell *shell, char *limit)
 {
 	pid_t	pid;
 	int		fd[2];
 	int		status;
-	t_cmd	*tmp_cmd;
-	t_redir	*tmp_redir;
 
 	if (pipe(fd) < 0)
 		return (ft_putendl_fd("failed to open pipe", 2), 1);
@@ -46,101 +104,11 @@ int	heredoc(t_shell *shell, char *limit)
 		signal(SIGINT, heredoc_sigint_handler);
 		g_signal = S_HEREDOC;
 		close(fd[0]);
-		tmp_cmd = shell->cmd;
-                while (tmp_cmd)
-                {
-                        tmp_redir = tmp_cmd->redirs;
-                        while (tmp_redir)
-                        {
-                                if (tmp_redir->redir_in > 2)
-                                        close(tmp_redir->redir_in);
-                                if (tmp_redir->redir_out > 2)
-                                        close(tmp_redir->redir_out);
-                                tmp_redir = tmp_redir->next;
-                        }
-                        tmp_cmd = tmp_cmd->next;
-                }
+		close_heredoc_fds(shell);
 		heredoc_loop(shell, limit, fd[1]);
 	}
 	g_signal = S_HEREDOC_END;
 	waitpid(pid, &status, 0);
 	close(fd[1]);
-	if ((WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
-		|| (WIFEXITED(status) && WEXITSTATUS(status) == 130))
-	{
-		g_signal = S_SIGINT_CMD;
-		printf("\n");
-		close(fd[0]);
-		return (-1);
-	}
-	return (fd[0]);
-}
-
-int	redirect(t_shell *shell, t_redir *tmp)
-{
-	int	fd;
-
-	if (tmp->type == INPUT)
-	{
-		return (input_asignment(tmp));
-	}
-	else if (tmp->type == TRUNC)
-	{
-		fd = open(tmp->target, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		tmp->redir_out = fd;
-	}
-	else if (tmp->type == APPEND)
-	{
-		fd = open(tmp->target, O_WRONLY | O_CREAT | O_APPEND, 0644);
-		tmp->redir_out = fd;
-	}
-	else if (tmp->type == HEREDOC)
-	{
-		fd = heredoc(shell, tmp->target);
-		tmp->redir_in = fd;
-//		if (g_signal != S_CANCEL_EXEC)
-//			g_signal = S_BASE;
-	}
-	return (1);
-}
-
-int	fill_redirs(t_shell *shell, t_cmd *mycmd)
-{
-	t_redir	*myred;
-	int		tmp;
-	int		ret;
-
-	ret = 1;
-	myred = mycmd->redirs;
-	while (myred)
-	{
-		if (g_signal == S_SIGINT_CMD)
-			break ; 
-		tmp = redirect(shell, myred);
-		if (!tmp)
-			ret = 0;
-		myred = myred->next;
-	}
-	return (ret);
-}
-
-void	apply_redirs(t_cmd *cmd)
-{
-	t_redir	*redir;
-
-	redir = cmd->redirs;
-	while (redir)
-	{
-		if (redir->redir_in != -1 && redir->redir_in != STDIN_FILENO)
-		{
-			dup2(redir->redir_in, STDIN_FILENO);
-			close(redir->redir_in);
-		}
-		if (redir->redir_out != -1 && redir->redir_out != STDOUT_FILENO)
-		{
-			dup2(redir->redir_out, STDOUT_FILENO);
-			close(redir->redir_out);
-		}
-		redir = redir->next;
-	}
+	return (check_heredoc_status(status, fd[0]));
 }
