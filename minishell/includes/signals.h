@@ -10,13 +10,13 @@ extern int	g_signal;
 */
 typedef enum e_signal
 {
-	S_BASE,			// Base signal
-	S_HEREDOC,		// entering Heredoc
-	S_HEREDOC_END,	// finishing Heredoc
-	S_SIGINT,		// Ctrl + C
-	S_SIGINT_CMD,	// Ctrl + C in the middle of a command
-	S_CMD,			// comman executing
-	S_CANCEL_EXEC,	// Ctrl + D in Heredoc
+	S_BASE,
+	S_HEREDOC,
+	S_HEREDOC_END,
+	S_SIGINT,
+	S_SIGINT_CMD,
+	S_CMD,
+	S_CANCEL_EXEC,
 	S_SIZE
 }			t_signal;
 
