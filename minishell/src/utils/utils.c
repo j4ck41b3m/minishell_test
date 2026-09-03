@@ -72,6 +72,16 @@ void	free_mem_all(char **ptr)
 	ptr = NULL;
 }
 
+/**
+ * @brief Reads a line from standard input for non-interactive mode
+ * 
+ * Uses get_next_line to read from STDIN (fd 0). If a line is successfully 
+ * read, it removes the trailing newline character ('\n') before returning it,
+ * mimicking the behavior of the standard readline function
+ * 
+ * @return A dynamically allocated string containing the line read, 
+ *         or NULL if EOF is reached or an error occurs
+ */
 char	*read_line(void)
 {
 	char	*line;
