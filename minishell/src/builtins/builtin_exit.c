@@ -2,26 +2,42 @@
 #include "libft.h"
 #include "builtins_utils.h"
 
-static void	skip_spaces_tabs(char *str, int *sign, int *i,
-	unsigned long long	*num, unsigned long long *limit)
+/**
+ * @brief Skips leading spaces/tabs and determines the sign and limits
+ * 
+ * @param str The string to parse
+ * @param sign Pointer to store the calculated sign (1 or -1)
+ * @param limit Pointer to store the maximum allowed limit for over/underflow
+ * @return The index of the first character after spaces and signs
+ */
+static int	skip_spaces_tabs(char *str, int *sign, unsigned long long *limit)
 {
+	int	i;
+
+	i = 0;
 	*sign = 1;
-	*i = 0;
-	*num = 0;
-	while (str[*i] == ' ' || str[*i] == '\t')
-		(*i)++;
-	if (str[*i] == '-' || str[*i] == '+')
+	while (str[i] == ' ' || str[i] == '\t')
+		i++;
+	if (str[i] == '-' || str[i] == '+')
 	{
-		if (str[*i] == '-')
+		if (str[i] == '-')
 			*sign = -1;
-		(*i)++;
+		i++;
 	}
 	if (*sign == -1)
 		*limit = (unsigned long long) LLONG_MAX + 1ULL;
 	else
 		*limit = (unsigned long long) LLONG_MAX;
+	return (i);
 }
 
+/**
+ * @brief Parses the numeric argument and sets the correct exit status
+ * 
+ * @param str The numeric string to evaluate
+ * @param status Pointer to store the resulting exit status code
+ * @return 0 on success, 2 if an overflow or non-numeric error occurs
+ */
 static int	set_exit_code(char *str, int *status)
 {
 	int					i;
@@ -29,7 +45,8 @@ static int	set_exit_code(char *str, int *status)
 	unsigned long long	num;
 	unsigned long long	limit;
 
-	skip_spaces_tabs(str, &sign, &i, &num, &limit);
+	num = 0;
+	i = skip_spaces_tabs(str, &sign, &limit);
 	while (ft_isdigit(str[i]))
 	{
 		if (num > limit / 10 || (num == limit / 10
@@ -39,13 +56,10 @@ static int	set_exit_code(char *str, int *status)
 	}
 	if (sign < 0 && num == (unsigned long long) LLONG_MAX + 1ULL)
 		*status = 0;
+	else if (sign == -1)
+		*status = (int)(-(long long) num % 256);
 	else
-	{
-		if (sign == -1)
-			*status = (int)(-(long long) num % 256);
-		else
-			*status = (int)(num % 256);
-	}
+		*status = (int)(num % 256);
 	if (*status < 0)
 		*status += 256;
 	return (0);
@@ -65,7 +79,6 @@ static int	set_exit_code(char *str, int *status)
 *
 * - the number passed by argument
 */
-
 static int	check_exit_args(t_shell *msh)
 {
 	int	i;
@@ -96,7 +109,6 @@ static int	check_exit_args(t_shell *msh)
 *
 * @param msh The global status of minishell
 */
-
 void	builtin_exit(t_shell *msh)
 {
 	char	*tmp;
