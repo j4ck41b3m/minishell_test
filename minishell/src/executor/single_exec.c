@@ -97,9 +97,9 @@ void	execve_cmd(t_shell *shell, t_cmd *cmd)
 }
 
 /**
- * @brief Closes all file descriptors used for a single command's redirections.
+ * @brief Closes all file descriptors used for a single command's redirections
  * 
- * @param redir The linked list of redirections for the command.
+ * @param redir The linked list of redirections for the command
  */
 static void	close_cmd_redirs(t_redir *redir)
 {
@@ -114,9 +114,9 @@ static void	close_cmd_redirs(t_redir *redir)
 }
 
 /**
- * @brief Forks and executes a single non-builtin command.
+ * @brief Forks and executes a single non-builtin command
  * 
- * @param msh The global status of minishell.
+ * @param msh The global status of minishell
  */
 void	exec_cmd(t_shell *msh)
 {

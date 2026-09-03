@@ -1,6 +1,11 @@
 #include "minishell.h"
 
-void	close_pids(t_shell *shell)
+/**
+ * @brief Iterates through all commands and closes their opened FDs
+ * 
+ * @param shell The global status of minishell
+ */
+static void	close_pids(t_shell *shell)
 {
 	t_redir	*redir;
 	t_cmd	*cmd;
@@ -8,7 +13,7 @@ void	close_pids(t_shell *shell)
 	cmd = shell->cmd;
 	while (cmd)
 	{
-		redir = shell->cmd->redirs;
+		redir = cmd->redirs;
 		while (redir)
 		{
 			if (redir->redir_in > 2)
@@ -21,23 +26,12 @@ void	close_pids(t_shell *shell)
 	}
 }
 
-void	exec_split(t_shell *shell, t_cmd *cmd, int prev_fd, int pipefd[2])
-{
-	g_signal = S_CMD;
-	child_exec(shell, cmd, prev_fd, pipefd);
-}
-
-void	exec_split_second(t_cmd *cmd, int *prev_fd, int pipefd[2])
-{
-	if (*prev_fd != -1)
-		close(*prev_fd);
-	if (cmd->next)
-	{
-		close(pipefd[1]);
-		*prev_fd = pipefd[0];
-	}
-}
-
+/**
+ * @brief Waits for pipeline children and sets the global exit status
+ * 
+ * @param shell The global status of minishell
+ * @param last_pid The PID of the last command executed in the pipeline
+ */
 void	exec_pipeline_cont(t_shell *shell, pid_t last_pid)
 {
 	int	status;
@@ -56,10 +50,4 @@ void	exec_pipeline_cont(t_shell *shell, pid_t last_pid)
 	while (waitpid(-1, NULL, 0) > 0)
 		continue ;
 	close_pids(shell);
-}
-
-void	exit_pipecmd(t_shell *shell, char *str)
-{
-	perror(str);
-	shell->last_status = 1;
 }

@@ -1,32 +1,6 @@
 #include "minishell.h"
 #include "libft.h"
 
-void	handle_status(t_shell *msh)
-{
-	if (WIFEXITED(msh->last_status))
-		msh->last_status = WEXITSTATUS(msh->last_status);
-	if (g_signal == S_SIGINT_CMD)
-		msh->last_status = 130;
-	printf("Status is %d\n", msh->last_status);
-	g_signal = S_BASE;
-}
-
-void	next_cmd(t_shell *msh)
-{
-	t_cmd	*mycmd;
-
-	mycmd = msh->cmd;
-	while (mycmd->redirs)
-	{
-		if (mycmd->redirs->redir_in != 0)
-			close(mycmd->redirs->redir_in);
-		if (mycmd->redirs->redir_out != 1)
-			close(mycmd->redirs->redir_out);
-		mycmd->redirs = mycmd->redirs->next;
-	}
-	msh->cmd = msh->cmd->next;
-}
-
 /**
  * @brief Converts the list into an array
  *
@@ -67,21 +41,11 @@ char	**env_to_array(t_shell *msh)
 	return (ret);
 }
 
-int	input_asignment(t_redir *tmp)
-{
-	int	fd;
-
-	fd = open(tmp->target, O_RDONLY);
-	if (fd == -1)
-	{
-		ft_putstr_fd("minishell: no such file or directory: ", 2);
-		ft_putendl_fd(tmp->target, 2);
-		return (0);
-	}
-	tmp->redir_in = fd;
-	return (1);
-}
-
+/**
+ * @brief Iterates through commands to check and flag if they are builtins
+ * 
+ * @param cmd A pointer to the first command node in the list
+ */
 void	classify_cmd(t_cmd **cmd)
 {
 	t_cmd	*aux;
@@ -95,4 +59,48 @@ void	classify_cmd(t_cmd **cmd)
 			aux->is_builtin = is_builtin(aux);
 		aux = aux->next;
 	}
+}
+
+/**
+ * @brief Sets signal state and executes the child process in a pipeline
+ * 
+ * @param shell The global status of minishell
+ * @param cmd The current command to execute
+ * @param prev_fd The read end of the previous pipe
+ * @param pipefd Array containing the current pipe FDs
+ */
+void	exec_split(t_shell *shell, t_cmd *cmd, int prev_fd, int pipefd[2])
+{
+	g_signal = S_CMD;
+	child_exec(shell, cmd, prev_fd, pipefd);
+}
+
+/**
+ * @brief Closes appropriate pipe ends in the parent process
+ * 
+ * @param cmd The current command node
+ * @param prev_fd Pointer to the previous pipe's read end to be updated
+ * @param pipefd Array containing the current pipe FDs
+ */
+void	exec_split_second(t_cmd *cmd, int *prev_fd, int pipefd[2])
+{
+	if (*prev_fd != -1)
+		close(*prev_fd);
+	if (cmd->next)
+	{
+		close(pipefd[1]);
+		*prev_fd = pipefd[0];
+	}
+}
+
+/**
+ * @brief Prints a pipe error message and updates the exit status to 1
+ * 
+ * @param shell The global status of minishell
+ * @param str The custom string to pass to perror
+ */
+void	exit_pipecmd(t_shell *shell, char *str)
+{
+	perror(str);
+	shell->last_status = 1;
 }

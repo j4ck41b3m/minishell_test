@@ -1,11 +1,34 @@
 #include "minishell.h"
+#include "libft.h"
 
 /**
-* @brief Opens the appropriate file descriptors based on the redirection type.
+ * @brief Opens a file for input redirection and validates its existence
+ * 
+ * @param tmp The redirection node containing the target file
+ * @return 1 on success, 0 if the file cannot be opened
+ */
+static int	input_asignment(t_redir *tmp)
+{
+	int	fd;
+
+	fd = open(tmp->target, O_RDONLY);
+	if (fd == -1)
+	{
+		ft_putstr_fd("minishell: no such file or directory: ", 2);
+		ft_putendl_fd(tmp->target, 2);
+		return (0);
+	}
+	tmp->redir_in = fd;
+	return (1);
+}
+
+
+/**
+* @brief Opens the appropriate file descriptors based on the redirection type
 *
-* @param shell The global status of minishell.
-* @param tmp The current redirection node to process.
-* @return 1 on success, 0 on failure.
+* @param shell The global status of minishell
+* @param tmp The current redirection node to process
+* @return 1 on success, 0 on failure
 */
 static int	redirect(t_shell *shell, t_redir *tmp)
 {
@@ -34,11 +57,11 @@ static int	redirect(t_shell *shell, t_redir *tmp)
 }
 
 /**
-* @brief Iterates and applies all redirections for a specific command.
+* @brief Iterates and applies all redirections for a specific command
 *
-* @param shell The global status of minishell.
-* @param mycmd The command node containing the redirections list.
-* @return 1 if all redirections were successful, 0 otherwise.
+* @param shell The global status of minishell
+* @param mycmd The command node containing the redirections list
+* @return 1 if all redirections were successful, 0 otherwise
 */
 int	fill_redirs(t_shell *shell, t_cmd *mycmd)
 {
@@ -61,9 +84,9 @@ int	fill_redirs(t_shell *shell, t_cmd *mycmd)
 }
 
 /**
-* @brief Duplicates the parsed file descriptors to STDIN and STDOUT.
+* @brief Duplicates the parsed file descriptors to STDIN and STDOUT
 *
-* @param cmd The command node containing the valid file descriptors.
+* @param cmd The command node containing the valid file descriptors
 */
 void	apply_redirs(t_cmd *cmd)
 {

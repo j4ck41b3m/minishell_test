@@ -1,7 +1,13 @@
 #include "minishell.h"
 #include "libft.h"
 
-t_status	prepare_redirections(t_shell *shell)
+/**
+ * @brief Prepares and opens all file descriptors for the command list
+ * 
+ * @param shell The global status of minishell
+ * @return SUCCESS if all redirections are valid, FAILURE otherwise
+ */
+static t_status	prepare_redirections(t_shell *shell)
 {
 	t_cmd	*mycmd;
 	int		tmp;
@@ -22,7 +28,16 @@ t_status	prepare_redirections(t_shell *shell)
 		return (FAILURE);
 }
 
-void	execute_single(t_shell *shell)
+/**
+ * @brief Executes a single command when no pipes are involved
+ * 
+ * If the command is a builtin, it saves STDIN and STDOUT, applies redirs,
+ * executes the builtin in the parent process, and restores the standard FDs.
+ * If it's an external command, it forks and executes normally
+ * 
+ * @param shell The global status of minishell
+ */
+static void	execute_single(t_shell *shell)
 {
 	int	ant_stdin;
 	int	ant_stdout;
@@ -44,6 +59,14 @@ void	execute_single(t_shell *shell)
 	return ;
 }
 
+/**
+ * @brief Handles dup2 and executes the command inside a child process
+ * 
+ * @param shell The global status of minishell
+ * @param cmd The current command node to execute
+ * @param prev_fd The read end of the previous pipe (or -1 if first command)
+ * @param pipefd Array containing the current pipe FDs
+ */
 void	child_exec(t_shell *shell, t_cmd *cmd, int prev_fd, int pipefd[2])
 {
 	if (prev_fd != -1)
@@ -66,7 +89,12 @@ void	child_exec(t_shell *shell, t_cmd *cmd, int prev_fd, int pipefd[2])
 	exit(shell->last_status);
 }
 
-void	execute_pipeline(t_shell *shell)
+/**
+ * @brief Sets up pipes and forks processes for a pipeline execution
+ * 
+ * @param shell The global status of minishell
+ */
+static void	execute_pipeline(t_shell *shell)
 {
 	int		prev_fd;
 	int		pipefd[2];
@@ -94,6 +122,14 @@ void	execute_pipeline(t_shell *shell)
 	exec_pipeline_cont(shell, last_pid);
 }
 
+/**
+ * @brief Main entry point for command execution.
+ * 
+ * Classifies commands, prepares redirections, and routes the execution 
+ * to either single command mode or pipeline mode
+ * 
+ * @param shell The global status of minishell
+ */
 void	executor(t_shell *shell)
 {
 	classify_cmd(&shell->cmd);

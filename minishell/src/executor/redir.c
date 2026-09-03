@@ -2,11 +2,11 @@
 #include "libft.h"
 
 /**
-* @brief Reads lines from standard input until the delimiter is found.
+* @brief Reads lines from standard input until the delimiter is found
 *
-* @param shell The global status of minishell.
-* @param limit The delimiter string to stop the heredoc.
-* @param fd The file descriptor of the pipe to write the input to.
+* @param shell The global status of minishell
+* @param limit The delimiter string to stop the heredoc
+* @param fd The file descriptor of the pipe to write the input to
 */
 static void	heredoc_loop(t_shell *shell, char *limit, int fd)
 {
@@ -36,9 +36,9 @@ static void	heredoc_loop(t_shell *shell, char *limit, int fd)
 }
 
 /**
-* @brief Closes all redirections greater than 2 to prevent FD leaks in heredoc.
+* @brief Closes all redirections greater than 2 to prevent FD leaks in heredoc
 *
-* @param shell The global status of minishell.
+* @param shell The global status of minishell
 */
 static void	close_heredoc_fds(t_shell *shell)
 {
@@ -62,11 +62,11 @@ static void	close_heredoc_fds(t_shell *shell)
 }
 
 /**
-* @brief Checks the exit status of the heredoc child process.
+* @brief Checks the exit status of the heredoc child process
 *
-* @param status The waitpid status integer.
-* @param fd_zero The read end of the heredoc pipe.
-* @return The fd to read from, or -1 if execution was cancelled by signal.
+* @param status The waitpid status integer
+* @param fd_zero The read end of the heredoc pipe
+* @return The fd to read from, or -1 if execution was cancelled by signal
 */
 static int	check_heredoc_status(int status, int fd_zero)
 {
@@ -82,11 +82,11 @@ static int	check_heredoc_status(int status, int fd_zero)
 }
 
 /**
-* @brief Creates a pipe and forks a process to execute a heredoc.
+* @brief Creates a pipe and forks a process to execute a heredoc
 *
-* @param shell The global status of minishell.
-* @param limit The delimiter string to stop the heredoc.
-* @return The read end of the pipe, or -1 if it fails.
+* @param shell The global status of minishell
+* @param limit The delimiter string to stop the heredoc
+* @return The read end of the pipe, or -1 if it fails
 */
 int	heredoc(t_shell *shell, char *limit)
 {
