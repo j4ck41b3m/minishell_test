@@ -70,7 +70,6 @@ void	execute_pipeline(t_shell *shell)
 {
 	int		prev_fd;
 	int		pipefd[2];
-	pid_t	pid;
 	pid_t	last_pid;
 	t_cmd	*cmd;
 
@@ -79,20 +78,17 @@ void	execute_pipeline(t_shell *shell)
 	cmd = shell->cmd;
 	while (cmd)
 	{
-		if (!cmd->arg || !cmd->arg[0])
+		if (cmd->arg && cmd->arg[0])
 		{
-			cmd = cmd->next;
-			continue ;
+			if (cmd->next && pipe(pipefd) < 0)
+				return (exit_pipecmd(shell, "lol"));
+			last_pid = fork();
+			if (last_pid < 0)
+				return (exit_pipecmd(shell, "fork"));
+			if (last_pid == 0)
+				exec_split(shell, cmd, prev_fd, pipefd);
+			exec_split_second(cmd, &prev_fd, pipefd);
 		}
-		if (cmd->next && pipe(pipefd) < 0)
-			return (exit_pipecmd(shell, "lol"));
-		pid = fork();
-		if (pid < 0)
-			return (exit_pipecmd(shell, "fork"));
-		if (pid == 0)
-			exec_split(shell, cmd, prev_fd, pipefd);
-		last_pid = pid;
-		exec_split_second(cmd, &prev_fd, pipefd);
 		cmd = cmd->next;
 	}
 	exec_pipeline_cont(shell, last_pid);
