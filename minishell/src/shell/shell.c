@@ -6,7 +6,6 @@
 *
 * @param shell The global status of minishell
 */
-
 static void	update_shellevel(t_shell *shell)
 {
 	char	*shlvl;
@@ -38,7 +37,6 @@ static void	update_shellevel(t_shell *shell)
 * @param key The key to update
 * @param new_value The new value to update
 */
-
 static void	update_env_var(t_env *env, char *key, char *new_value)
 {
 	char	*value;
@@ -58,7 +56,6 @@ static void	update_env_var(t_env *env, char *key, char *new_value)
 *
 * @param shell The global status of minishell
 */
-
 static void	basic_env_vars(t_shell *shell)
 {
 	char	*pwd;
@@ -81,7 +78,6 @@ static void	basic_env_vars(t_shell *shell)
 * @param shell The global status of minishell
 * @param envp The system environment variables
 */
-
 void	init_shell(t_shell *shell, char **envp, char **av)
 {
 	shell->env = NULL;
@@ -101,7 +97,6 @@ void	init_shell(t_shell *shell, char **envp, char **av)
 *
 * @param shell A pointer to the shell struct
 */
-
 void	end_shell(t_shell *shell)
 {
 	char	*tmp;
