@@ -7,7 +7,7 @@
  * @param str The string to check
  * @return SUCCESS if it is not contains, FAILURE otherwise
  */
-t_status	contains_invalid_char(char *str)
+static t_status	contains_invalid_char(char *str)
 {
 	unsigned char	c;
 
