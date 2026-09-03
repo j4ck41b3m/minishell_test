@@ -9,7 +9,6 @@
 * @param curr The token to delete
 * @return The token's list with the token deleted
 */
-
 static t_token	*del_token(t_token **list, t_token *prev, t_token *curr)
 {
 	t_token	*next;
@@ -34,7 +33,6 @@ static t_token	*del_token(t_token **list, t_token *prev, t_token *curr)
 * @param last_status The last state returned by the system
 * @return The token's content expanded
 */
-
 static char	*expand_word(char *value, t_env *env, int last_status)
 {
 	int		i;
@@ -69,7 +67,7 @@ static char	*expand_word(char *value, t_env *env, int last_status)
  * @param start The position from which to start searching
  * @return The final group position
  */
-int	find_group_end(char *value, int start)
+static int	find_group_end(char *value, int start)
 {
 	int	level;
 	int	i;

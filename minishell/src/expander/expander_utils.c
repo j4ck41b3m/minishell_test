@@ -25,6 +25,41 @@ char	*extract_single_quoted(char *value, int *i)
 }
 
 /**
+ * @brief Extracts the text between double quotes
+ * 
+ * @param value The text with double quotes
+ * @param i A pointer to an index
+ * @return The extracted text
+ */
+char	*extract_double_quoted(char *value, int *i, t_env *env,
+			int last_status)
+{
+	char	*result;
+	char	*fragment;
+	int		start;
+
+	(*i)++;
+	result = ft_strdup("");
+	while (value[*i] && value[*i] != '"')
+	{
+		if (value[*i] == '$')
+			fragment = expand_variable(value, i, env, last_status);
+		else
+		{
+			start = *i;
+			while (value[*i] && value[*i] != '"'
+				&& value[*i] != '$')
+				(*i)++;
+			fragment = ft_substr(value, start, *i - start);
+		}
+		result = ft_strjoin_free(result, fragment);
+	}
+	if (value[*i] == '"')
+		(*i)++;
+	return (result);
+}
+
+/**
  * @brief Expand the value of ~
  * 
  * @param i A pointer to a index
@@ -75,41 +110,6 @@ char	*expand_variable(char *value, int *i, t_env *env, int last_status)
 	else
 		return (ft_strdup("$"));
 	(*i)++;
-	return (result);
-}
-
-/**
- * @brief Extracts the text between double quotes
- * 
- * @param value The text with double quotes
- * @param i A pointer to an index
- * @return The extracted text
- */
-char	*extract_double_quoted(char *value, int *i, t_env *env,
-			int last_status)
-{
-	char	*result;
-	char	*fragment;
-	int		start;
-
-	(*i)++;
-	result = ft_strdup("");
-	while (value[*i] && value[*i] != '"')
-	{
-		if (value[*i] == '$')
-			fragment = expand_variable(value, i, env, last_status);
-		else
-		{
-			start = *i;
-			while (value[*i] && value[*i] != '"'
-				&& value[*i] != '$')
-				(*i)++;
-			fragment = ft_substr(value, start, *i - start);
-		}
-		result = ft_strjoin_free(result, fragment);
-	}
-	if (value[*i] == '"')
-		(*i)++;
 	return (result);
 }
 
