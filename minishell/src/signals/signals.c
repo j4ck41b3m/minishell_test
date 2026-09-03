@@ -67,9 +67,13 @@ void	sigint_handler_aux(void)
 }
 
 /**
- * @brief 
+ * @brief Signal handler for SIGINT (Ctrl+C) inside a heredoc child process
  * 
- * @param sig 
+ * Updates the global signal state to indicate an interruption and safely 
+ * closes the standard input (STDIN_FILENO). This forces the readline loop 
+ * to break immediately, allowing the heredoc process to exit correctly.
+ * 
+ * @param sig The signal number (expected to be SIGINT, safely cast to void)
  */
 void	heredoc_sigint_handler(int sig)
 {
