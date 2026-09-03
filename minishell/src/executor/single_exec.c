@@ -1,13 +1,44 @@
 #include "minishell.h"
 #include "libft.h"
 
+/**
+ * @brief Iterates through the PATH array to find the executable
+ * 
+ * @param paths Array of directory paths from the PATH environment variable
+ * @param cmd The command to search for
+ * @return The complete path to the executable, or NULL if not found
+ */
+static char	*search_in_paths(char **paths, char *cmd)
+{
+	int		i;
+	char	*tmp;
+	char	*full_path;
+
+	i = -1;
+	while (paths[++i])
+	{
+		tmp = ft_strjoin(paths[i], "/");
+		full_path = ft_strjoin(tmp, cmd);
+		free(tmp);
+		if (!access(full_path, F_OK))
+			return (full_path);
+		free(full_path);
+	}
+	return (NULL);
+}
+
+/**
+ * @brief Obtains the absolute path of a command to be executed
+ * 
+ * @param cmd The command name or relative/absolute path
+ * @param env The environment variables linked list
+ * @return The dynamically allocated path to the command, or NULL
+ */
 char	*get_cmd_path(char *cmd, t_env *env)
 {
 	char	**paths;
-	int		i;
-	char	*tmp_str;
-	char	*complete_path;
 	char	*tmp;
+	char	*result;
 
 	if (ft_strchr(cmd, '/'))
 	{
@@ -15,32 +46,30 @@ char	*get_cmd_path(char *cmd, t_env *env)
 			return (ft_strdup(cmd));
 		return (NULL);
 	}
-	if (!env)
-		return (NULL);
 	tmp = env_get(env, "PATH");
-	if (!tmp)
+	if (!tmp || !env)
 		return (NULL);
 	paths = ft_split(tmp, ':');
 	free_mem(tmp);
 	if (!paths)
 		return (NULL);
-	i = -1;
-	while (paths[++i])
-	{
-		tmp_str = ft_strjoin(paths[i], "/");
-		complete_path = ft_strjoin(tmp_str, cmd);
-		free(tmp_str);
-		if (!access(complete_path, F_OK))
-		{
-			free_mem_all(paths);
-			return (complete_path);
-		}
-		free(complete_path);
-	}
+	result = search_in_paths(paths, cmd);
 	free_mem_all(paths);
-	return (NULL);
+	return (result);
 }
 
+/**
+ * @brief Executes a system command using the execve system call.
+ * 
+ * Resolves the command's absolute path and converts the environment
+ * variables list into an array before calling execve. If the command 
+ * is empty (e.g., only redirections), it exits safely with status 0. 
+ * If the command is not found or execution fails, it prints an error 
+ * message to standard error and exits with status 127.
+ * 
+ * @param shell The global status of minishell, containing the environment.
+ * @param cmd The command node containing the arguments to be executed.
+ */
 void	execve_cmd(t_shell *shell, t_cmd *cmd)
 {
 	char	*cmd_path;
@@ -53,7 +82,10 @@ void	execve_cmd(t_shell *shell, t_cmd *cmd)
 	{
 		ft_putstr_fd("minishell: ", 2);
 		ft_putstr_fd(cmd->arg[0], 2);
-		ft_putendl_fd(" : No such file or directory", 2);
+		if (ft_strchr(cmd->arg[0], '/'))
+			ft_putendl_fd(": No such file or directory", 2);
+		else
+			ft_putendl_fd(": command not found", 2);
 		exit(127);
 	}
 	envp = env_to_array(shell);
@@ -64,11 +96,32 @@ void	execve_cmd(t_shell *shell, t_cmd *cmd)
 	exit(127);
 }
 
+/**
+ * @brief Closes all file descriptors used for a single command's redirections.
+ * 
+ * @param redir The linked list of redirections for the command.
+ */
+static void	close_cmd_redirs(t_redir *redir)
+{
+	while (redir)
+	{
+		if (redir->redir_in > 2)
+			close(redir->redir_in);
+		if (redir->redir_out > 2)
+			close(redir->redir_out);
+		redir = redir->next;
+	}
+}
+
+/**
+ * @brief Forks and executes a single non-builtin command.
+ * 
+ * @param msh The global status of minishell.
+ */
 void	exec_cmd(t_shell *msh)
 {
 	pid_t	pid;
 	int		status;
-	t_redir	*redir;
 
 	pid = fork();
 	if (pid == 0)
@@ -89,13 +142,5 @@ void	exec_cmd(t_shell *msh)
 	}
 	else
 		msh->last_status = 1;
-	redir = msh->cmd->redirs;
-	while (redir)
-	{
-		if (redir->redir_in > 2)
-			close(redir->redir_in);
-		if (redir->redir_out > 2)
-			close(redir->redir_out);
-		redir = redir->next;
-	}
+	close_cmd_redirs(msh->cmd->redirs);
 }
