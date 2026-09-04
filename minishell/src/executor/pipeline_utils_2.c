@@ -5,7 +5,7 @@
  * 
  * @param shell The global status of minishell
  */
-static void	close_pids(t_shell *shell)
+void	close_pids(t_shell *shell)
 {
 	t_redir	*redir;
 	t_cmd	*cmd;

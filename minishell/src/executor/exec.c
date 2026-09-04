@@ -145,4 +145,6 @@ void	executor(t_shell *shell)
 		else
 			execute_pipeline(shell);
 	}
+	else
+		close_pids(shell);
 }
