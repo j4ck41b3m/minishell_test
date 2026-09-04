@@ -24,6 +24,11 @@ int	inter_mini(t_shell shell)
 	while (shell.running)
 	{
 		shell.line = get_prompt(&shell);
+		if (!shell.line)
+		{
+			ft_putendl_fd("exit", 2);
+			break;
+		}
 		if (parse(shell.line, &shell))
 		{
 			if (g_signal != S_SIGINT_CMD)
