@@ -6,7 +6,7 @@
 /*   By: bconejo- <bconejo-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/04 18:55:29 by bconejo-          #+#    #+#             */
-/*   Updated: 2026/09/04 18:55:30 by bconejo-         ###   ########.fr       */
+/*   Updated: 2026/09/04 18:59:29 by bconejo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ int	inter_mini(t_shell shell)
 		if (!shell.line)
 		{
 			ft_putendl_fd("exit", 2);
-			break;
+			break ;
 		}
 		if (parse(shell.line, &shell))
 		{
