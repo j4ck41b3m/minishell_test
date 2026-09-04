@@ -152,9 +152,9 @@ executor(shell)
                          ├─ Iterative loop over each command:
                          │      ├─ pipe(pipefd)
                          │      ├─ fork()
-                         │      ├─ Child: exec_split() ──▶ child_exec()
+                         │      ├─ Child: child_exec()
                          │      │          └─ dup2(prev_fd/pipefd) + apply_redirs() + execve/builtin
-                         │      └─ Parent: exec_split_second()
+                         │      └─ Parent: close_pipe()
                          │                 └─ Closes write end and updates prev_fd
                          │
                          └─ After loop: exec_pipeline_cont()

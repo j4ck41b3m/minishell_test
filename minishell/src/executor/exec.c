@@ -114,8 +114,8 @@ static void	execute_pipeline(t_shell *shell)
 			if (last_pid < 0)
 				return (exit_pipecmd(shell, "fork"));
 			if (last_pid == 0)
-				exec_split(shell, cmd, prev_fd, pipefd);
-			exec_split_second(cmd, &prev_fd, pipefd);
+				child_exec(shell, cmd, prev_fd, pipefd);
+			close_pipe(cmd, &prev_fd, pipefd);
 		}
 		cmd = cmd->next;
 	}
@@ -139,6 +139,7 @@ void	executor(t_shell *shell)
 	{
 		if (g_signal == S_SIGINT_CMD)
 			return ;
+		g_signal = S_CMD;
 		if (!shell->cmd->next)
 			execute_single(shell);
 		else

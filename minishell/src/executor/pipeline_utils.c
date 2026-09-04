@@ -6,7 +6,7 @@
  *
  * This function converts the enviroment list into an array chain in a 
  * "key=value" form, where each array element rpresents an enviroment variable
- * The arrayś last element is NULL
+ * The arrays last element is NULL
  *
  * @param msh Shell pointer
  * @return Array chain that represents the enviroment variables
@@ -62,27 +62,13 @@ void	classify_cmd(t_cmd **cmd)
 }
 
 /**
- * @brief Sets signal state and executes the child process in a pipeline
- * 
- * @param shell The global status of minishell
- * @param cmd The current command to execute
- * @param prev_fd The read end of the previous pipe
- * @param pipefd Array containing the current pipe FDs
- */
-void	exec_split(t_shell *shell, t_cmd *cmd, int prev_fd, int pipefd[2])
-{
-	g_signal = S_CMD;
-	child_exec(shell, cmd, prev_fd, pipefd);
-}
-
-/**
  * @brief Closes appropriate pipe ends in the parent process
  * 
  * @param cmd The current command node
  * @param prev_fd Pointer to the previous pipe's read end to be updated
  * @param pipefd Array containing the current pipe FDs
  */
-void	exec_split_second(t_cmd *cmd, int *prev_fd, int pipefd[2])
+void	close_pipe(t_cmd *cmd, int *prev_fd, int pipefd[2])
 {
 	if (*prev_fd != -1)
 		close(*prev_fd);
