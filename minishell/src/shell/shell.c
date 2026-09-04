@@ -6,7 +6,7 @@
 /*   By: bconejo- <bconejo-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/04 18:55:05 by bconejo-          #+#    #+#             */
-/*   Updated: 2026/09/04 18:55:06 by bconejo-         ###   ########.fr       */
+/*   Updated: 2026/09/04 20:53:01 by bconejo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ static void	update_shellevel(t_shell *shell)
 	shlvl = env_get(shell->env, "SHLVL");
 	if (!shlvl)
 	{
-		add_env(&shell->env, new_env("SHLVL", "1"));
+		add_env(&shell->env, new_env("SHLVL", "2"));
 		return ;
 	}
 	else
@@ -49,13 +49,13 @@ static void	update_shellevel(t_shell *shell)
 * @param key The key to update
 * @param new_value The new value to update
 */
-static void	update_env_var(t_env *env, char *key, char *new_value)
+static void	update_env_var(t_env **env, char *key, char *new_value)
 {
 	char	*value;
 
-	value = env_get(env, key);
+	value = env_get(*env, key);
 	if (value == NULL)
-		env_set(&env, key, new_value);
+		env_set(env, key, new_value);
 	else
 	{
 		free(value);
@@ -73,11 +73,11 @@ static void	basic_env_vars(t_shell *shell)
 	char	*pwd;
 
 	pwd = getcwd(NULL, 0);
-	update_env_var(shell->env, "OLDPWD", NULL);
-	update_env_var(shell->env, "PWD", pwd);
-	update_env_var(shell->env, "MAIL", "bconejo-@student.42malaga.com");
-	update_env_var(shell->env, "_", "/usr/bin/env");
-	update_env_var(shell->env, "PS1",
+	update_env_var(&shell->env, "OLDPWD", NULL);
+	update_env_var(&shell->env, "PWD", pwd);
+	update_env_var(&shell->env, "MAIL", "bconejo-@student.42malaga.com");
+	update_env_var(&shell->env, "_", "/usr/bin/env");
+	update_env_var(&shell->env, "PS1",
 		"\001\033[38;5;229m\002minishell \001\033[0m\002% \001\033[37m\002");
 	update_shellevel(shell);
 	free(pwd);

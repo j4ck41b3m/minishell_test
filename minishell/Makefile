@@ -6,7 +6,7 @@
 #    By: bconejo- <bconejo-@student.42malaga.com    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2026/09/04 18:55:59 by bconejo-          #+#    #+#              #
-#    Updated: 2026/09/04 18:56:00 by bconejo-         ###   ########.fr        #
+#    Updated: 2026/09/04 20:33:42 by bconejo-         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -87,7 +87,7 @@ re: fclean all
 # Memory testing rules
 valgrind: $(NAME)
 	@printf "$(GREEN)Running $(NAME) with Valgrind...$(RESET)\n"
-	@valgrind --leak-check=full --show-leak-kinds=definite --track-origins=yes --track-fds=yes ./$(NAME)
+	@valgrind --leak-check=full --show-leak-kinds=all --suppressions=supp.supp --track-origins=yes --track-fds=yes ./$(NAME)
 
 asan: fclean
 	@printf "$(BLUE)Compiling with AddressSanitizer...$(RESET)\n"

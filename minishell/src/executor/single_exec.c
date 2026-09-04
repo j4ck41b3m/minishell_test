@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   single_exec.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcolina- <jcolina-@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: bconejo- <bconejo-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/04 18:32:36 by jcolina-          #+#    #+#             */
-/*   Updated: 2026/09/04 18:32:37 by jcolina-         ###   ########.fr       */
+/*   Updated: 2026/09/04 20:39:37 by bconejo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ void	execve_cmd(t_shell *shell, t_cmd *cmd)
 			ft_putendl_fd(": No such file or directory", 2);
 		else
 			ft_putendl_fd(": command not found", 2);
+		end_shell(shell);
 		exit(127);
 	}
 	envp = env_to_array(shell);
@@ -105,6 +106,7 @@ void	execve_cmd(t_shell *shell, t_cmd *cmd)
 	perror(shell->name);
 	free_mem_all(envp);
 	free_mem(cmd_path);
+	end_shell(shell);
 	exit(127);
 }
 

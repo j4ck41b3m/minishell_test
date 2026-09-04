@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jcolina- <jcolina-@student.42malaga.com    +#+  +:+       +#+        */
+/*   By: bconejo- <bconejo-@student.42malaga.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/09/04 18:31:56 by jcolina-          #+#    #+#             */
-/*   Updated: 2026/09/04 18:31:59 by jcolina-         ###   ########.fr       */
+/*   Updated: 2026/09/04 21:26:33 by bconejo-         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,8 @@ static void	execute_single(t_shell *shell)
  */
 void	child_exec(t_shell *shell, t_cmd *cmd, int prev_fd, int pipefd[2])
 {
+	t_cmd	*backup_cmd;
+	
 	if (prev_fd != -1)
 	{
 		dup2(prev_fd, STDIN_FILENO);
@@ -95,9 +97,15 @@ void	child_exec(t_shell *shell, t_cmd *cmd, int prev_fd, int pipefd[2])
 	signal(SIGQUIT, SIG_DFL);
 	apply_redirs(cmd);
 	if (cmd->is_builtin)
+	{	
+		backup_cmd = shell->cmd;
+		shell->cmd = cmd;
 		exec_builtin(shell);
+		shell->cmd = backup_cmd;
+	}
 	else
 		execve_cmd(shell, cmd);
+	end_shell(shell);
 	exit(shell->last_status);
 }
 

@@ -1,8 +1,11 @@
 Cosas a arreglar:
 
-- comando no encontrado
-- leaks al ejecutar `.` y `..`
-- pipe con un builtin `exit | exit`
-- error al borrar una carpeta de un nivel anterior
+| Error | Estado |
+|:----:|:----|
+| comando no encontrado	| Solucionado ✓ |
+| leaks al ejecutar `.` y `..` | Solucionado ✓ |
+| pipe con un builtin | Solucionado ✓ |
+| variables mínimas no creadas | Solucionado ✓ |
+| error al borrar una carpeta de un nivel anterior | Pendiente x |
 
-valgrind --leak-check=full --show-leak-kinds=all --suppressions=supp.supp --track-fds=yes ./minishell
+Jorge, tienes que dividir la función child_exec ahora tiene 26 líneas
