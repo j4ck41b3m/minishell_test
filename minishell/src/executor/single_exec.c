@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   single_exec.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: jcolina- <jcolina-@student.42malaga.com    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/09/04 18:32:36 by jcolina-          #+#    #+#             */
+/*   Updated: 2026/09/04 18:32:37 by jcolina-         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 #include "libft.h"
 
@@ -126,7 +138,6 @@ void	exec_cmd(t_shell *msh)
 	pid = fork();
 	if (pid == 0)
 	{
-	//	g_signal = S_CMD;
 		signal(SIGQUIT, SIG_DFL);
 		apply_redirs(msh->cmd);
 		execve_cmd(msh, msh->cmd);
