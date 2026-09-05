@@ -23,6 +23,7 @@ int		fill_redirs(t_shell *shell, t_cmd *mycmd);
 void	classify_cmd(t_cmd **cmd);
 void	close_pipe(t_cmd *cmd, int *prev_fd, int pipefd[2]);
 void	exec_pipeline_cont(t_shell *shell, pid_t last_pid);
+void	dup_n_close_pipe(int pipefd[2]);
 void	close_pids(t_shell *shell);
 void	exit_pipecmd(t_shell *shell, char *str);
 void	apply_redirs(t_cmd *cmd);

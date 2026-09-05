@@ -8,4 +8,4 @@ Cosas a arreglar:
 | variables mínimas no creadas | Solucionado ✓ |
 | error al borrar una carpeta de un nivel anterior | Pendiente x |
 
-Jorge, tienes que dividir la función child_exec ahora tiene 26 líneas
+Jorge, tienes que dividir la función child_exec ahora tiene 26 líneas | Solucionado ✓ |

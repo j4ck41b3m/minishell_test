@@ -89,11 +89,7 @@ void	child_exec(t_shell *shell, t_cmd *cmd, int prev_fd, int pipefd[2])
 		close(prev_fd);
 	}
 	if (cmd->next)
-	{
-		dup2(pipefd[1], STDOUT_FILENO);
-		close(pipefd[0]);
-		close(pipefd[1]);
-	}
+		dup_n_close_pipe(pipefd);
 	signal(SIGQUIT, SIG_DFL);
 	apply_redirs(cmd);
 	if (cmd->is_builtin)

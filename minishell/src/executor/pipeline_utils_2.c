@@ -63,3 +63,10 @@ void	exec_pipeline_cont(t_shell *shell, pid_t last_pid)
 		continue ;
 	close_pids(shell);
 }
+
+void	dup_n_close_pipe(int pipefd[2])
+{
+	dup2(pipefd[1], STDOUT_FILENO);
+	close(pipefd[0]);
+	close(pipefd[1]);
+}
